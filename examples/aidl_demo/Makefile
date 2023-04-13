@@ -38,4 +38,7 @@ PROGNAME += TestClientCpc
 MAINSRC  += TestServerCpc.cpp
 PROGNAME += TestServerCpc
 
+MAINSRC  += TestServerDumpsys.cpp
+PROGNAME += TestServerDumpsys
+
 include $(APPDIR)/Application.mk
