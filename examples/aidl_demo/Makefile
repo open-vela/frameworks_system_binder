@@ -23,15 +23,24 @@ PRIORITY  = SCHED_PRIORITY_DEFAULT
 STACKSIZE = $(CONFIG_BINDER_EXAMPLES_STACKSIZE)
 
 AIDLFLAGS = --lang=cpp -h. -o.
+AIDLFLAGS += -I.
 AIDLSRCS += ITestStuff.aidl
+AIDLSRCS += ITestPromise.aidl ITestPromiseCallback.aidl
 
 CXXFLAGS += -I.
 
 CXXSRCS  += ITestStuff.cpp
+CXXSRCS  += ITestPromise.cpp ITestPromiseCallback.cpp
+
 MAINSRC  += TestClient.cpp
 PROGNAME += TestClient
 MAINSRC  += TestServer.cpp
 PROGNAME += TestServer
+
+MAINSRC  += PromiseClient.cpp
+PROGNAME += PromiseClient
+MAINSRC  += PromiseServer.cpp
+PROGNAME += PromiseServer
 
 MAINSRC  += TestClientCpc.cpp
 PROGNAME += TestClientCpc
