@@ -22,7 +22,7 @@ extern "C" int main(int count, char** argv)
     ALOGI("client RpcSession::make...");
     auto session = RpcSession::make();
     auto status = session->setupRpmsgSockClient("ap", "cpc");
-    ALOGI("session->setupCpcSockClient:%d", status);
+    ALOGI("session->setupCpcSockClient:%" PRIi32, status);
 
     auto remoteBinder = session->getRootObject();
     // interface_cast restore ITest interface
