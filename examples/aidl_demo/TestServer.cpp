@@ -1,12 +1,12 @@
 #define LOG_TAG "TestService"
 
 #include <binder/IPCThreadState.h>
-#include <binder/ProcessState.h>
 #include <binder/IServiceManager.h>
+#include <binder/ProcessState.h>
 
-#include "ITestStuff.h"
 #include "BnTestStuff.h"
 #include "BpTestStuff.h"
+#include "ITestStuff.h"
 
 #include <utils/Log.h>
 #include <utils/String8.h>
@@ -18,20 +18,22 @@ namespace android {
 class ITestServer : public BnTestStuff {
 public:
     // ITestServer::read()
-    Status read(int32_t sample) {
-        ALOGD("ITest::read() called %d, start do hard work", sample);
+    Status read(int32_t sample)
+    {
+        ALOGD("ITest::read() called %" PRIi32 ", start do hard work", sample);
         return Status::ok();
     }
 
     // ITestServer::write()
-    Status write(int32_t index) {
-        ALOGD("ITest::write() called %d, start do hard work", index);
+    Status write(int32_t index)
+    {
+        ALOGD("ITest::write() called %" PRIi32 ", start do hard work", index);
         return Status::ok();
     }
 };
 } // namespace android
 
-extern "C" int main(int argc, char **argv)
+extern "C" int main(int argc, char** argv)
 {
     ALOGI("sample service start count: %d, argv[0]: %s", argc, argv[0]);
 
