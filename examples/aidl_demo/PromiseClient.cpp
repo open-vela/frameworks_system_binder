@@ -41,7 +41,7 @@ extern "C" int main(int argc, char** argv)
     sp<CallbackPromise> callback = sp<CallbackPromise>::make();
     service->add(102, 302, callback);
 
-    std::future<int> f = callback->get_future();
+    std::future<int32_t> f = callback->get_future();
     ALOGI("result %d", f.get());
 
     return 0;
