@@ -25,11 +25,20 @@ STACKSIZE = $(CONFIG_BINDER_EXAMPLES_STACKSIZE)
 AIDLFLAGS = --lang=cpp -h. -o.
 AIDLFLAGS += -I.
 AIDLSRCS += ITestStuff.aidl
+AIDLSRCS += INdkTest.aidl
+INdkTest.aidl_AIDLFLAGS = --lang=ndk --ndk=ctype
 AIDLSRCS += ITestPromise.aidl ITestPromiseCallback.aidl
 
 CXXFLAGS += -I.
 
 CXXSRCS  += ITestStuff.cpp
+CXXSRCS  += INdkTest.cpp
+
+MAINSRC  += NdkTestSrv.cpp
+PROGNAME += NdkTestSrv
+MAINSRC  += NdkTestCli.cpp
+PROGNAME += NdkTestCli
+
 CXXSRCS  += ITestPromise.cpp ITestPromiseCallback.cpp
 
 MAINSRC  += TestClient.cpp
