@@ -28,6 +28,10 @@ AIDLSRCS += ITestStuff.aidl
 AIDLSRCS += INdkTest.aidl
 INdkTest.aidl_AIDLFLAGS = --lang=ndk --ndk=ctype
 AIDLSRCS += ITestPromise.aidl ITestPromiseCallback.aidl
+INdkTestVector.aidl_AIDLFLAGS = --lang=ndk --ndk=ctype
+AIDLSRCS += INdkTestVector.aidl
+INdkTestArray.aidl_AIDLFLAGS = --lang=ndk --ndk=ctype
+AIDLSRCS += INdkTestArray.aidl
 
 CXXFLAGS += -I.
 
@@ -40,6 +44,8 @@ MAINSRC  += NdkTestCli.cpp
 PROGNAME += NdkTestCli
 
 CXXSRCS  += ITestPromise.cpp ITestPromiseCallback.cpp
+CXXSRCS  += INdkTestVector.cpp
+CXXSRCS  += INdkTestArray.cpp
 
 MAINSRC  += TestClient.cpp
 PROGNAME += TestClient
@@ -52,6 +58,16 @@ ifdef CONFIG_LIBUV
 MAINSRC  += TestServerLibuv.cpp
 PROGNAME += TestServerLibuv
 endif
+
+MAINSRC  += NdkTestVectorSrv.cpp
+PROGNAME += NdkTestVectorSrv
+MAINSRC  += NdkTestVectorCli.cpp
+PROGNAME += NdkTestVectorCli
+
+MAINSRC  += NdkTestArraySrv.cpp
+PROGNAME += NdkTestArraySrv
+MAINSRC  += NdkTestArrayCli.cpp
+PROGNAME += NdkTestArrayCli
 
 MAINSRC  += PromiseClient.cpp
 PROGNAME += PromiseClient
