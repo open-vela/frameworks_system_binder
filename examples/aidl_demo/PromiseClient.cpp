@@ -42,7 +42,7 @@ extern "C" int main(int argc, char** argv)
     service->add(102, 302, callback);
 
     std::future<int32_t> f = callback->get_future();
-    ALOGI("result %d", f.get());
+    ALOGI("result %" PRId32, f.get());
 
     return 0;
 }
