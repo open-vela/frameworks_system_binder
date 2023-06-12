@@ -33,6 +33,13 @@ public:
         callback->result(a + b);
         return binder::Status::ok();
     }
+    binder::Status requestExit()
+    {
+        ALOGI("requestExit: from %s thread", (getpid() == gettid()) ? "main" : "pool");
+        ProcessState::self()->requestExit();
+
+        return binder::Status::ok();
+    }
 };
 
 extern "C" int main(int argc, char** argv)
@@ -42,6 +49,7 @@ extern "C" int main(int argc, char** argv)
     sp<MyTestServer> server = sp<MyTestServer>::make();
     defaultServiceManager()->addService(String16("testpromise.service"), server);
 
+    ProcessState::self()->startThreadPool();
     IPCThreadState::self()->joinThreadPool();
     return 0;
 }
