@@ -55,6 +55,11 @@ extern "C" int main(int argc, char** argv)
 
     sp<ITestPromise> service = interface_cast<ITestPromise>(binder);
 
+    if (argc == 2 && strcmp(argv[1], "exit") == 0) {
+        service->requestExit();
+        return 0;
+    }
+
     sp<CallbackPromise> callback = sp<CallbackPromise>::make();
     service->add(102, 302, callback);
 
