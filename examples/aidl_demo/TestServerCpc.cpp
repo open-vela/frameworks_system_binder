@@ -1,18 +1,9 @@
 #define LOG_TAG "TestService"
 
-#include <binder/IPCThreadState.h>
-#include <binder/ProcessState.h>
-
 #include "BnTestStuff.h"
-#include "BpTestStuff.h"
-#include "ITestStuff.h"
 
-#include <binder/RpcCertificateFormat.h>
 #include <binder/RpcServer.h>
-#include <binder/RpcSession.h>
-#include <binder/RpcTransportRaw.h>
 #include <utils/Log.h>
-#include <utils/String8.h>
 
 using namespace android;
 using android::binder::Status;
