@@ -1,12 +1,8 @@
 #define LOG_TAG "TestClient"
 
-#include <binder/IPCThreadState.h>
-#include <binder/ProcessState.h>
 #include <binder/IServiceManager.h>
 
 #include "ITestStuff.h"
-#include "BnTestStuff.h"
-#include "BpTestStuff.h"
 
 #include <utils/Log.h>
 #include <utils/String8.h>
@@ -14,9 +10,9 @@
 using namespace android;
 using android::binder::Status;
 
-extern "C" int main(int count, char **argv)
+extern "C" int main(int argc, char** argv)
 {
-    ALOGI("demo client start count: %d, argv[0]: %s", count, argv[0]);
+    ALOGI("demo client start count: %d, argv[0]: %s", argc, argv[0]);
 
     // obtain service manager
     sp<IServiceManager> sm(defaultServiceManager());
