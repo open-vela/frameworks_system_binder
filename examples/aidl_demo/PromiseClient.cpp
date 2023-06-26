@@ -3,7 +3,6 @@
 
 #include "BnTestPromiseCallback.h"
 #include "ITestPromise.h"
-#include "ITestPromiseCallback.h"
 
 #include <utils/Log.h>
 
