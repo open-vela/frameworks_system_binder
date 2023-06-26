@@ -1,23 +1,14 @@
 #define LOG_TAG "TestClient"
 
-#include <binder/IPCThreadState.h>
-#include <binder/ProcessState.h>
-
-#include "BnTestStuff.h"
-#include "BpTestStuff.h"
 #include "ITestStuff.h"
 
-#include <binder/RpcCertificateFormat.h>
-#include <binder/RpcServer.h>
 #include <binder/RpcSession.h>
-#include <binder/RpcTransportRaw.h>
 #include <utils/Log.h>
-#include <utils/String8.h>
 
 using namespace android;
 using android::binder::Status;
 
-extern "C" int main(int count, char** argv)
+extern "C" int main(int argc, char** argv)
 {
     ALOGI("client RpcSession::make...");
     auto session = RpcSession::make();
