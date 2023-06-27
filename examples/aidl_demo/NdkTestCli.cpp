@@ -3,9 +3,9 @@
 #include <aidl/INdkTest.h>
 #include <android/binder_manager.h>
 
-extern "C" int main(int count, char** argv)
+extern "C" int main(int argc, char** argv)
 {
-    printf("demo client start count: %d, argv[0]: %s\n", count, argv[0]);
+    printf("demo client start argc: %d, argv[0]: %s\n", argc, argv[0]);
 
     ndk::SpAIBinder binder = ndk::SpAIBinder(AServiceManager_checkService("ndktest.service"));
     if (binder.get() == nullptr) {
