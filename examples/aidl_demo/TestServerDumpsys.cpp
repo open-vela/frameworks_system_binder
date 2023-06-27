@@ -5,8 +5,6 @@
 #include <binder/ProcessState.h>
 
 #include "BnTestStuff.h"
-#include "BpTestStuff.h"
-#include "ITestStuff.h"
 
 #include <utils/Log.h>
 #include <utils/String8.h>
