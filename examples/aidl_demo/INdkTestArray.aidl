@@ -25,4 +25,14 @@ interface INdkTestArray
     float[3] RepeatFloatArray(in float[3] input, out float[3] repeated);
     double[3] RepeatDoubleArray(in double[3] input, out double[3] repeated);
     String[3] RepeatStringArray(in String[3] input, out String[3] repeated);
+
+    // Nullable Arrays
+    @nullable boolean[3] RepeatNullableBooleanArray(in @nullable boolean[3] input);
+    @nullable byte[3] RepeatNullableByteArray(in @nullable byte[3] input);
+    @nullable char[3] RepeatNullableCharArray(in @nullable char[3] input);
+    @nullable int[3] RepeatNullableIntArray(in @nullable int[3] input);
+    @nullable long[3] RepeatNullableLongArray(in @nullable long[3] input);
+    @nullable float[3] RepeatNullableFloatArray(in @nullable float[3] input);
+    @nullable double[3] RepeatNullableDoubleArray(in @nullable double[3] input);
+    @nullable String[3] RepeatNullableStringArray(in @nullable String[3] input);
 }
