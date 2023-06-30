@@ -170,5 +170,181 @@ extern "C" int main(int argc, char** argv)
         free(sret[i]);
     }
 
+    // Test C type nullable bool array usage
+    // bool nbin[3] = { true, true, false };
+    bool* nbin = nullptr;
+    bool nbret[3];
+    bool* nbret_p = nbret;
+    status = proxy->RepeatNullableBooleanArray(nbin, &nbret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableBooleanArray error\n");
+        return 1;
+    } else {
+        printf("Nullable Bool ret is");
+        if (nbret_p) {
+            for (int i = 0; i < 3; i++) {
+                if (nbret[i]) {
+                    printf(" true");
+                } else {
+                    printf(" false");
+                }
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test C type nullable byte array usage
+    // uint8_t nbyin[3] = { '1', '2', '3' };
+    uint8_t* nbyin = nullptr;
+    uint8_t nbyret[3];
+    uint8_t* nbyret_p = nbyret;
+    status = proxy->RepeatNullableByteArray(nbyin, &nbyret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableByteArray error\n");
+        return 1;
+    } else {
+        printf("Nullable Byte ret is");
+        if (nbyret_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %c", nbyret[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test C type nullable char array usage
+    // char16_t ncin[3] = { '1', '2', '3' };
+    char16_t* ncin = nullptr;
+    char16_t ncret[3];
+    char16_t* ncret_p = ncret;
+    status = proxy->RepeatNullableCharArray(ncin, &ncret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableCharArray error\n");
+        return 1;
+    } else {
+        printf("Nullable Char ret is");
+        if (ncret_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %c", ncret[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test C type nullable int array usage
+    // int32_t niin[3] = { 1, 2, 3 };
+    int32_t* niin = nullptr;
+    int32_t niret[3];
+    int32_t* niret_p = niret;
+    status = proxy->RepeatNullableIntArray(niin, &niret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableIntArray error\n");
+        return 1;
+    } else {
+        printf("Nullable Int ret is");
+        if (niret_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %" PRId32, niret[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test C type nullable long array usage
+    // int64_t nlin[3] = { 1, 2, 3 };
+    int64_t* nlin = nullptr;
+    int64_t nlret[3];
+    int64_t* nlret_p = nlret;
+    status = proxy->RepeatNullableLongArray(nlin, &nlret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableLongArray error\n");
+        return 1;
+    } else {
+        printf("Nullable Long ret is");
+        if (nlret_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %" PRId64, nlret[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test C type nullable float array usage
+    // float nfin[3] = { 1.0, 2.0, 3.0 };
+    float* nfin = nullptr;
+    float nfret[3];
+    float* nfret_p = nfret;
+    status = proxy->RepeatNullableFloatArray(nfin, &nfret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableFloatArray error\n");
+        return 1;
+    } else {
+        printf("Nullable Float ret is");
+        if (nfret_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %f", nfret[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test C type nullable double array usage
+    // double ndin[3] = { 1.0, 2.0, 3.0 };
+    double* ndin = nullptr;
+    double ndret[3];
+    double* ndret_p = ndret;
+    status = proxy->RepeatNullableDoubleArray(ndin, &ndret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableDoubleArray error\n");
+        return 1;
+    } else {
+        printf("Nullable Double ret is");
+        if (ndret_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %lf", ndret[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test C type nullable string array usage
+    // const char* nsin[3] = { "abc", "def", "ghi" };
+    const char** nsin = nullptr;
+    char* nsret[3];
+    char** nsret_p = nsret;
+    status = proxy->RepeatNullableStringArray(nsin, &nsret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableStringArray error\n");
+        return 1;
+    } else {
+        printf("String ret is");
+        if (nsret_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %s", nsret[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    if (nsret_p) {
+        for (int i = 0; i < 3; i++) {
+            free(nsret[i]);
+        }
+    }
     return 0;
 }

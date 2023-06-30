@@ -28,4 +28,15 @@ interface INdkTestVector
 
     // List
     List<String> Repeat2StringList(in List<String> input, out List<String> repeated);
+    @nullable List<String> Repeat2NullableStringList(in @nullable List<String> input, out @nullable List<String> repeated);
+
+    // Nullable Arrays
+    @nullable boolean[] RepeatNullableBooleanVector(in @nullable boolean[] input);
+    @nullable byte[] RepeatNullableByteVector(in @nullable byte[] input);
+    @nullable char[] RepeatNullableCharVector(in @nullable char[] input);
+    @nullable int[] RepeatNullableIntVector(in @nullable int[] input);
+    @nullable long[] RepeatNullableLongVector(in @nullable long[] input);
+    @nullable float[] RepeatNullableFloatVector(in @nullable float[] input);
+    @nullable double[] RepeatNullableDoubleVector(in @nullable double[] input);
+    @nullable String[] RepeatNullableStringVector(in @nullable String[] input);
 }

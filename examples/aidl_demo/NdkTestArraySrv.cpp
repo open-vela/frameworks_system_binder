@@ -96,6 +96,114 @@ class NdkTestArraySrv : public aidl::BnNdkTestArray {
         }
         return ndk::ScopedAStatus::ok();
     }
+
+    ::ndk::ScopedAStatus RepeatNullableBooleanArray(const bool* in_input, bool** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            (*_aidl_return)[i] = in_input[i];
+        }
+        return ndk::ScopedAStatus::ok();
+    }
+
+    ::ndk::ScopedAStatus RepeatNullableByteArray(const uint8_t* in_input, uint8_t** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            (*_aidl_return)[i] = in_input[i];
+        }
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus RepeatNullableCharArray(const char16_t* in_input, char16_t** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            (*_aidl_return)[i] = in_input[i];
+        }
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus RepeatNullableIntArray(const int32_t* in_input, int32_t** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            (*_aidl_return)[i] = in_input[i];
+        }
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus RepeatNullableLongArray(const int64_t* in_input, int64_t** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            (*_aidl_return)[i] = in_input[i];
+        }
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus RepeatNullableFloatArray(const float* in_input, float** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            (*_aidl_return)[i] = in_input[i];
+        }
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus RepeatNullableDoubleArray(const double* in_input, double** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            (*_aidl_return)[i] = in_input[i];
+        }
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus RepeatNullableStringArray(const char** in_input, char*** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            size_t input_len = strlen(in_input[i]) + 1;
+            (*_aidl_return)[i] = (char*)malloc(input_len);
+            memcpy((*_aidl_return)[i], in_input[i], input_len);
+        }
+        return ndk::ScopedAStatus::ok();
+    }
 };
 
 extern "C" int main(int argc, char** argv)

@@ -319,5 +319,236 @@ extern "C" int main(int argc, char** argv)
     }
     free(slret);
 
+    // Test C type nullable bool vector usage
+    int32_t nbin_len = 0;
+    bool* nbin = nullptr;
+    // int32_t nbin_len = 3;
+    // bool nbin[3] = { false, false, true };
+    int32_t nbret_len = 0;
+    bool* nbret = nullptr;
+    status = proxy->RepeatNullableBooleanVector(nbin, nbin_len, &nbret, &nbret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableBooleanVector error\n");
+        return 1;
+    } else {
+        printf("Nullable Bool ret is");
+        for (int i = 0; i < nbret_len; i++) {
+            if (nbret[i]) {
+                printf(" true");
+            } else {
+                printf(" false");
+            }
+        }
+        if (!nbret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    free(nbret);
+
+    // Test C type nullable byte vector usage
+    int32_t nbyin_len = 0;
+    uint8_t* nbyin = nullptr;
+    // int32_t nbyin_len = 3;
+    // uint8_t nbyin[3] = { '1', '2', '3' };
+    int32_t nbyret_len = 0;
+    uint8_t* nbyret = nullptr;
+    status = proxy->RepeatNullableByteVector(nbyin, nbyin_len, &nbyret, &nbyret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableByteVector error\n");
+        return 1;
+    } else {
+        printf("Nullable Byte ret is");
+        for (int i = 0; i < nbyret_len; i++) {
+            printf(" %c", nbyret[i]);
+        }
+        if (!nbyret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    free(nbyret);
+
+    // Test C type nullable char vector usage
+    int32_t ncin_len = 0;
+    char16_t* ncin = nullptr;
+    // int32_t ncin_len = 3;
+    // char16_t ncin[3] = { '1', '2', '3' };
+    int32_t ncret_len = 0;
+    char16_t* ncret = nullptr;
+    status = proxy->RepeatNullableCharVector(ncin, ncin_len, &ncret, &ncret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableCharVector error\n");
+        return 1;
+    } else {
+        printf("Nullable Char ret is");
+        for (int i = 0; i < ncret_len; i++) {
+            printf(" %c", ncret[i]);
+        }
+        if (!ncret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    free(ncret);
+
+    // Test C type nullable int vector usage
+    int32_t niin_len = 0;
+    int32_t* niin = nullptr;
+    // int32_t niin_len = 3;
+    // int32_t niin[3] = { 1, 2, 3 };
+    int32_t niret_len = 0;
+    int32_t* niret = nullptr;
+    status = proxy->RepeatNullableIntVector(niin, niin_len, &niret, &niret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableIntVector error\n");
+        return 1;
+    } else {
+        printf("Nullable Int ret is");
+        for (int i = 0; i < niret_len; i++) {
+            printf(" %" PRId32, niret[i]);
+        }
+        if (!niret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    free(niret);
+
+    // Test C type nullable long vector usage
+    int32_t nlin_len = 0;
+    int64_t* nlin = nullptr;
+    // int32_t nlin_len = 3;
+    // int64_t nlin[3] = { 1, 2, 3 };
+    int32_t nlret_len = 0;
+    int64_t* nlret = nullptr;
+    status = proxy->RepeatNullableLongVector(nlin, nlin_len, &nlret, &nlret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableLongVector error\n");
+        return 1;
+    } else {
+        printf("Nullable Long ret is");
+        for (int i = 0; i < nlret_len; i++) {
+            printf(" %" PRId64, nlret[i]);
+        }
+        if (!nlret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    free(nlret);
+
+    // Test C type nullable float vector usage
+    int32_t nfin_len = 0;
+    float* nfin = nullptr;
+    // int32_t nfin_len = 3;
+    // float nfin[3] = { 1.0, 2.0, 3.0 };
+    int32_t nfret_len = 0;
+    float* nfret = nullptr;
+    status = proxy->RepeatNullableFloatVector(nfin, nfin_len, &nfret, &nfret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableFloatVector error\n");
+        return 1;
+    } else {
+        printf("Nullable Float ret is");
+        for (int i = 0; i < nfret_len; i++) {
+            printf(" %f", nfret[i]);
+        }
+        if (!nfret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    free(nfret);
+
+    // Test C type nullable double vector usage
+    int32_t ndin_len = 0;
+    double* ndin = nullptr;
+    // int32_t ndin_len = 3;
+    // double ndin[3] = { 1.0, 2.0, 3.0 };
+    int32_t ndret_len = 0;
+    double* ndret = nullptr;
+    status = proxy->RepeatNullableDoubleVector(ndin, ndin_len, &ndret, &ndret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableDoubleVector error\n");
+        return 1;
+    } else {
+        printf("Nullable Double ret is");
+        for (int i = 0; i < ndret_len; i++) {
+            printf(" %lf", ndret[i]);
+        }
+        if (!ndret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    free(ndret);
+
+    // Test C type nullable string vector usage
+    int32_t nsin_len = 0;
+    const char** nsin = nullptr;
+    // int32_t nsin_len = 3;
+    // const char* nsin[3] = { "abc", "def", "ghi" };
+    int32_t nsret_len = 0;
+    char** nsret = nullptr;
+    status = proxy->RepeatNullableStringVector(nsin, nsin_len, &nsret, &nsret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatNullableStringVector error\n");
+        return 1;
+    } else {
+        printf("Nullable String ret is");
+        for (int i = 0; i < nsret_len; i++) {
+            printf(" %s", nsret[i]);
+        }
+        if (!nsret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    for (int i = 0; i < nsret_len; i++) {
+        free(nsret[i]);
+    }
+    free(nsret);
+
+    // Test C type nullable string List usage
+    int32_t nslin_len = 0;
+    const char** nslin = nullptr;
+    // int32_t nslin_len = 3;
+    // const char* nslin[3] = { "abc", "def", "ghi" };
+    int32_t nslout_len = 0;
+    char** nslout = nullptr;
+    int32_t nslret_len = 0;
+    char** nslret = nullptr;
+    status = proxy->Repeat2NullableStringList(nslin, nslin_len, &nslout, &nslout_len, &nslret, &nslret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("Repeat2NullableStringList error\n");
+        return 1;
+    } else {
+        printf("Nullable String list out is");
+        for (int i = 0; i < nslout_len; i++) {
+            printf(" %s", nslout[i]);
+        }
+        if (!nslout) {
+            printf(" null");
+        }
+        printf("\n");
+        printf("Nullable String list ret is");
+        for (int i = 0; i < nslret_len; i++) {
+            printf(" %s", nslret[i]);
+        }
+        if (!nslret) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    for (int i = 0; i < nslout_len; i++) {
+        free(nslout[i]);
+    }
+    free(nslout);
+    for (int i = 0; i < nslret_len; i++) {
+        free(nslret[i]);
+    }
+    free(nslret);
+
     return 0;
 }
