@@ -21,6 +21,8 @@ public:
 
 extern "C" int main(int argc, char** argv)
 {
+    int32_t callback_result;
+
     ALOGD("promise client start argc: %d, argv[0]: %s", argc, argv[0]);
 
     // obtain service manager
@@ -41,7 +43,8 @@ extern "C" int main(int argc, char** argv)
     service->add(102, 302, callback);
 
     std::future<int32_t> f = callback->get_future();
-    ALOGI("result %" PRId32, f.get());
+    callback_result = f.get();
+    ALOGI("result %" PRId32, callback_result);
 
     return 0;
 }
