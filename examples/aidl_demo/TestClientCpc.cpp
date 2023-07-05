@@ -32,6 +32,10 @@ extern "C" int main(int argc, char** argv)
     ALOGI("session->setupCpcSockClient:%" PRIi32, status);
 
     auto remoteBinder = session->getRootObject();
+    if (!remoteBinder) {
+        ALOGI("remoteBinder get nullptr error");
+        return 0;
+    }
     // interface_cast restore ITest interface
     sp<ITestStuff> service = interface_cast<ITestStuff>(remoteBinder);
     if (service) {
