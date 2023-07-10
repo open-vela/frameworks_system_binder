@@ -1,0 +1,40 @@
+#
+# Copyright (C) 2022 Xiaomi Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+comment "Binder library (C version) for NuttX"
+
+config BINDER_LIB
+	bool "Enable Binder library (C version) for NuttX"
+	default n
+	---help---
+		This option enable Binder library (C version) for NuttX
+		The code is based on Android AOSP codebase but with a
+		total rewrite with C language. So that the library can
+		be used for some devices with limit low memory resource.
+
+config BINDER_IPC_32BIT
+	bool "Enable Binder library (C version) 32-bit support"
+	default n
+	depends on BINDER_LIB
+	---help---
+		This option enable Binder library (C version) 32-bit support.
+
+config BINDER_LIB_DEBUG
+	bool "Binder IPC Libs Debug Message Out Enable"
+	default n
+	depends on BINDER_LIB
+	---help---
+		This option enable binder lib debug message output.
