@@ -14,6 +14,6 @@
 # limitations under the License.
 #
 
-MENUDESC = "Binder"
+MENUDESC = "Binder Examples"
 
 include $(APPDIR)/Directory.mk
