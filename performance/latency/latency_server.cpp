@@ -21,7 +21,9 @@
 #include <sys/un.h>
 #include <unistd.h>
 
-#define BUFFER_SIZE 64
+#include "latency_time.h"
+
+#define BUFFER_SIZE 16
 #define SOCKET_PATH "/dev/local_socket"
 
 extern "C" int main(int argc, char** argv)
@@ -29,6 +31,9 @@ extern "C" int main(int argc, char** argv)
     char buffer[BUFFER_SIZE];
     int client_socket;
     int server_socket;
+    int cpu, cpu_caller = 0;
+    int priority, priority_caller = 0;
+    int h = 0, s = 0;
     struct sockaddr_un server_address, client_address;
     socklen_t client_address_len;
 
@@ -70,11 +75,32 @@ extern "C" int main(int argc, char** argv)
                 break;
             }
 
-            ssize_t response_size = send(client_socket, buffer, recv_size, 0);
+            memcpy(&priority_caller, buffer, sizeof(int32_t));
+            memcpy(&cpu_caller, buffer + sizeof(int32_t), sizeof(int32_t));
+
+            priority = thread_pri();
+            if (priority_caller != priority) {
+                h++;
+            }
+            if (priority == sched_get_priority_max(SCHED_FIFO)) {
+                cpu = sched_getcpu();
+                if (cpu_caller != cpu) {
+                    s++;
+                }
+            }
+
+            char* response = (char*)malloc(BUFFER_SIZE);
+            memset(response, 0, BUFFER_SIZE);
+            memcpy(response, &h, sizeof(int32_t));
+            memcpy(response + sizeof(int32_t), &s, sizeof(int32_t));
+
+            ssize_t response_size = send(client_socket, response, BUFFER_SIZE, 0);
             if (response_size < 0) {
                 perror("Failed to send data to client.");
                 break;
             }
+
+            free(response);
         }
 
         close(client_socket);

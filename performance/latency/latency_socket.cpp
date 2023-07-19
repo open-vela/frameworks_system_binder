@@ -28,14 +28,14 @@
 
 #include "latency_time.h"
 
-#define BUFFER_SIZE 64
+#define BUFFER_SIZE 16
 #define SOCKET_PATH "/dev/local_socket"
 
 struct socket_priv_t {
     void* result;
     int no_inherent;
     int no_sync;
-    int clientSocket;
+    int client_socket;
 };
 
 static void* thread_start(void* p)
@@ -44,47 +44,43 @@ static void* thread_start(void* p)
     Results* results_fifo = (Results*)priv->result;
     int no_inherent = priv->no_inherent;
     int no_sync = priv->no_sync;
-    int clientSocket = priv->clientSocket;
+    int client_socket = priv->client_socket;
     int cpu;
     int priority;
-    int priority_caller;
-    int cpu_caller;
-    int h = 0, s = 0;
     Tick sta, end;
-    char send_buffer[BUFFER_SIZE];
     char recv_buffer[BUFFER_SIZE];
+    int num1, num2;
 
-    sendBuffer(send_buffer, thread_pri(), sched_getcpu());
+    num1 = thread_pri();
+    num2 = sched_getcpu();
+
+    char* send_buffer = (char*)malloc(BUFFER_SIZE);
+    memset(send_buffer, 0, BUFFER_SIZE);
+    memcpy(send_buffer, &num1, sizeof(int32_t));
+    memcpy(send_buffer + sizeof(int32_t), &num2, sizeof(int32_t));
 
     sta = tickNow();
-    send(clientSocket, send_buffer, sizeof(send_buffer), 0);
-    recv(clientSocket, recv_buffer, sizeof(recv_buffer), 0);
-    recvBuffer(recv_buffer, &priority, &cpu);
-
-    priority_caller = thread_pri();
-    if (priority_caller != priority) {
-        h++;
-    }
-    if (priority_caller == sched_get_priority_max(SCHED_FIFO)) {
-        cpu_caller = sched_getcpu();
-        if (cpu != cpu_caller) {
-            s++;
-        }
-    }
+    send(client_socket, send_buffer, sizeof(send_buffer), 0);
+    recv(client_socket, recv_buffer, sizeof(recv_buffer), 0);
     end = tickNow();
     results_fifo->add_time(tickNano(sta, end));
 
-    no_inherent += h;
-    no_sync += s;
+    memcpy(&priority, recv_buffer, sizeof(int32_t));
+    memcpy(&cpu, recv_buffer + sizeof(int32_t), sizeof(int32_t));
+
+    no_inherent += priority;
+    no_sync += cpu;
+
+    free(send_buffer);
 
     return nullptr;
 }
 
 // create a fifo thread to transact and wait it to finished
-static void thread_transaction(Results* results_fifo, int no_inherent, int no_sync, int clientSocket)
+static void thread_transaction(Results* results_fifo, int no_inherent, int no_sync, int client_socket)
 {
     socket_priv_t thread_priv = {
-        results_fifo, no_inherent, no_sync, clientSocket
+        results_fifo, no_inherent, no_sync, client_socket
     };
     void* dummy;
     pthread_t thread;
@@ -100,26 +96,22 @@ static void thread_transaction(Results* results_fifo, int no_inherent, int no_sy
 
 int client(int iterations)
 {
+    char recv_buffer[BUFFER_SIZE];
     double sync_ratio;
-    int clientSocket;
+    int client_socket;
     int no_inherent = 0;
     int no_sync = 0;
     int no_trans;
     int priority = 0;
     int cpu = 0;
-    int priority_caller;
-    int cpu_caller;
-    int h = 0, s = 0;
+    int num1, num2;
     Results results_other(false);
     Results results_fifo(false);
     struct sockaddr_un serverAddr;
     Tick sta;
     Tick end;
 
-    char send_buffer[BUFFER_SIZE];
-    char recv_buffer[BUFFER_SIZE];
-
-    if ((clientSocket = socket(AF_LOCAL, SOCK_STREAM, 0)) == -1) {
+    if ((client_socket = socket(AF_LOCAL, SOCK_STREAM, 0)) == -1) {
         perror("Failed to create socket");
         exit(EXIT_FAILURE);
     }
@@ -128,34 +120,35 @@ int client(int iterations)
     strncpy(serverAddr.sun_path, SOCKET_PATH, sizeof(serverAddr.sun_path) - 1);
     unlink(serverAddr.sun_path);
 
-    if (connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
+    if (connect(client_socket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
         perror("Connection failed");
         exit(EXIT_FAILURE);
     }
 
     for (int i = 0; i < iterations; i++) {
-        thread_transaction(&results_fifo, no_inherent, no_sync, clientSocket);
-        sendBuffer(send_buffer, thread_pri(), sched_getcpu());
-        sta = tickNow();
-        send(clientSocket, send_buffer, sizeof(send_buffer), 0);
-        recv(clientSocket, recv_buffer, sizeof(recv_buffer), 0);
-        recvBuffer(recv_buffer, &priority, &cpu);
+        thread_transaction(&results_fifo, no_inherent, no_sync, client_socket);
 
-        priority_caller = thread_pri();
-        if (priority != priority_caller) {
-            h++;
-        }
-        if (priority_caller == sched_get_priority_max(SCHED_FIFO)) {
-            cpu_caller = sched_getcpu();
-            if (cpu != cpu_caller) {
-                s++;
-            }
-        }
+        num1 = thread_pri();
+        num2 = sched_getcpu();
+
+        char* send_buffer = (char*)malloc(BUFFER_SIZE);
+        memset(send_buffer, 0, BUFFER_SIZE);
+        memcpy(send_buffer, &num1, sizeof(int32_t));
+        memcpy(send_buffer + sizeof(int32_t), &num2, sizeof(int32_t));
+
+        sta = tickNow();
+        send(client_socket, send_buffer, sizeof(send_buffer), 0);
+        recv(client_socket, recv_buffer, sizeof(recv_buffer), 0);
         end = tickNow();
         results_other.add_time(tickNano(sta, end));
 
-        no_inherent += h;
-        no_sync += s;
+        memcpy(&priority, recv_buffer, sizeof(int32_t));
+        memcpy(&cpu, recv_buffer + sizeof(int32_t), sizeof(int32_t));
+
+        no_inherent += priority;
+        no_sync += cpu;
+
+        free(send_buffer);
     }
 
     no_trans = iterations * 2;
@@ -171,12 +164,12 @@ int client(int iterations)
     results_fifo.dump();
     printf("},\n");
 
-    return clientSocket;
+    return client_socket;
 }
 
 extern "C" int main(int argc, char** argv)
 {
-    int clientSocket;
+    int client_socket;
     int iterations = 100;
 
     for (int i = 1; i < argc; i++) {
@@ -190,9 +183,8 @@ extern "C" int main(int argc, char** argv)
     printf("{\n");
     printf("\"cfg\":{\"iterations\":%d,\"deadline_us\":%d},\n", iterations, deadline_us);
 
-    clientSocket = client(iterations);
+    client_socket = client(iterations);
     printf("PASS\n}\n");
-    close(clientSocket);
-
+    close(client_socket);
     return 0;
 }
