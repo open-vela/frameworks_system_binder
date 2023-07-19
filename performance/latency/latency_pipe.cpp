@@ -24,7 +24,7 @@
 
 #include "latency_time.h"
 
-#define BUFFER_SIZE 64
+#define BUFFER_SIZE 16
 struct pipe_priv {
     void* result;
     int no_inherent;
@@ -36,7 +36,6 @@ struct pipe_priv {
 static void* thread_start(void* p)
 {
     pipe_priv* priv = (pipe_priv*)p;
-    char buffer[BUFFER_SIZE];
     char response[BUFFER_SIZE];
     Results* results_fifo = (Results*)priv->result;
     int no_inherent = priv->no_inherent;
@@ -44,31 +43,30 @@ static void* thread_start(void* p)
     int& read_fd = priv->read_fd;
     int& write_fd = priv->write_fd;
     int cpu, priority;
-    int recv_pri, recv_cpu;
-    int h = 0, s = 0;
+    int num1, num2;
     Tick sta, end;
 
-    sendBuffer(buffer, thread_pri(), sched_getcpu());
+    num1 = thread_pri();
+    num2 = sched_getcpu();
+
+    char* buffer = (char*)malloc(BUFFER_SIZE);
+    memset(buffer, 0, sizeof(buffer));
+    memcpy(buffer, &num1, sizeof(int32_t));
+    memcpy(buffer + sizeof(int32_t), &num2, sizeof(int32_t));
 
     sta = tickNow();
     write(write_fd, buffer, sizeof(buffer));
     read(read_fd, response, sizeof(response));
-    recvBuffer(response, &recv_pri, &recv_cpu);
-    priority = thread_pri();
-    if (recv_pri != priority) {
-        h++;
-    }
-    if (priority == sched_get_priority_max(SCHED_FIFO)) {
-        cpu = sched_getcpu();
-        if (cpu != recv_cpu) {
-            s++;
-        }
-    }
     end = tickNow();
     results_fifo->add_time(tickNano(sta, end));
 
-    no_inherent += h;
-    no_sync += s;
+    memcpy(&priority, response, sizeof(int32_t));
+    memcpy(&cpu, response + sizeof(int32_t), sizeof(int32_t));
+
+    no_inherent += priority;
+    no_sync += cpu;
+
+    free(buffer);
 
     return nullptr;
 }
@@ -96,16 +94,17 @@ void pipe_transaction(int iterations)
 {
     double sync_ratio;
     char buffer[BUFFER_SIZE];
-    char response[BUFFER_SIZE];
     char recv_buffer[BUFFER_SIZE];
     int pipefd[2];
     int pipefds[2];
     int no_inherent = 0;
     int no_trans;
     int no_sync = 0;
-    int cpu, cpu_caller = 0;
     int priority, priority_caller = 0;
+    int cpu, cpu_caller = 0;
     int h = 0, s = 0;
+    int hh, ss;
+    int num1, num2;
     pid_t pid;
     Results results_other(false);
     Results results_fifo(false);
@@ -125,35 +124,67 @@ void pipe_transaction(int iterations)
     }
 
     if (pid == 0) {
+        close(pipefd[1]);
+
         while (1) {
-            ssize_t read_size = read(pipefd[0], response, sizeof(response));
-            write(pipefds[1], response, read_size);
+            read(pipefd[0], buffer, sizeof(buffer));
+
+            memcpy(&priority_caller, buffer, sizeof(int32_t));
+            memcpy(&cpu_caller, buffer + sizeof(int32_t), sizeof(int32_t));
+
+            priority = thread_pri();
+            if (priority_caller != priority) {
+                h++;
+            }
+            if (priority == sched_get_priority_max(SCHED_FIFO)) {
+                cpu = sched_getcpu();
+                if (cpu_caller != cpu) {
+                    s++;
+                }
+            }
+
+            char* response = (char*)malloc(BUFFER_SIZE);
+            memset(response, 0, BUFFER_SIZE);
+            memcpy(response, &h, sizeof(int32_t));
+            memcpy(response + sizeof(int32_t), &s, sizeof(int32_t));
+
+            write(pipefds[1], response, BUFFER_SIZE);
+
+            free(response);
         }
+
+        close(pipefds[1]);
     }
+
+    close(pipefd[0]);
 
     for (int i = 0; i < iterations; i++) {
         thread_transaction(&results_fifo, no_inherent, no_sync, pipefd[1], pipefds[0]);
-        sendBuffer(buffer, thread_pri(), sched_getcpu());
+
+        num1 = thread_pri();
+        num2 = sched_getcpu();
+
+        char* send_buffer = (char*)malloc(BUFFER_SIZE);
+        memset(send_buffer, 0, BUFFER_SIZE);
+        memcpy(send_buffer, &num1, sizeof(int32_t));
+        memcpy(send_buffer + sizeof(int32_t), &num2, sizeof(int32_t));
+
         sta = tickNow();
         write(pipefd[1], buffer, sizeof(buffer));
         read(pipefds[0], recv_buffer, sizeof(recv_buffer));
-        recvBuffer(recv_buffer, &priority_caller, &cpu_caller);
-        priority = thread_pri();
-        if (priority_caller != priority) {
-            h++;
-        }
-        if (priority == sched_get_priority_max(SCHED_FIFO)) {
-            cpu = sched_getcpu();
-            if (cpu_caller != cpu) {
-                s++;
-            }
-        }
         end = tickNow();
         results_other.add_time(tickNano(sta, end));
 
-        no_inherent += h;
-        no_sync += s;
+        memcpy(&hh, recv_buffer, sizeof(int32_t));
+        memcpy(&ss, recv_buffer + sizeof(int32_t), sizeof(int32_t));
+
+        no_inherent += hh;
+        no_sync += ss;
+
+        free(send_buffer);
     }
+
+    close(pipefds[0]);
 
     no_trans = iterations * 2;
     sync_ratio = (1.0 - (double)no_sync / no_trans);
