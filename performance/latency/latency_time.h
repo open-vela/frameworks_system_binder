@@ -80,34 +80,3 @@ static int thread_pri()
     pthread_getschedparam(pthread_self(), &policy, &param);
     return param.sched_priority;
 }
-
-static void sendBuffer(char* buffer, int pri, int cpu)
-{
-    char thread_pri[16];
-    char get_cpu[16];
-
-    sprintf(thread_pri, "%d", pri);
-    sprintf(get_cpu, "%d", cpu);
-
-    strcpy(buffer, thread_pri);
-    strcat(buffer, ",");
-    strcat(buffer, get_cpu);
-}
-
-static void recvBuffer(char* buffer, int* pri, int* cpu)
-{
-    char* recv_buffer;
-    char message[16];
-
-    strcpy(message, buffer);
-
-    recv_buffer = strtok(message, ",");
-    if (recv_buffer) {
-        *pri = atoi(recv_buffer);
-    }
-
-    recv_buffer = strtok(NULL, ",");
-    if (recv_buffer) {
-        *cpu = atoi(recv_buffer);
-    }
-}
