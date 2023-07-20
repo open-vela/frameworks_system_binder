@@ -31,4 +31,7 @@ PROGNAME += throughput_server
 MAINSRC  += Benchmark_pipe.cpp
 PROGNAME += Benchmark_pipe
 
+MAINSRC  += Benchmark_binder.cpp
+PROGNAME += Benchmark_binder
+
 include $(APPDIR)/Application.mk
