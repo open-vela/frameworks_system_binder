@@ -22,13 +22,16 @@ MODULE    = $(CONFIG_BINDER_PERFORMANCE_LATENCY)
 PRIORITY  = SCHED_PRIORITY_DEFAULT
 STACKSIZE = $(CONFIG_BINDER_PERFORMANCE_LATENCY_STACKSIZE)
 
+ifneq ($(CONFIG_BINDER_PERFORMANCE_LATENCY_SOCKET),)
 MAINSRC  += latency_server.cpp
 PROGNAME += latency_server
-
-MAINSRC  += latency_pipe.cpp
-PROGNAME += latency_pipe
-
 MAINSRC  += latency_socket.cpp
 PROGNAME += latency_socket
+endif
+
+ifneq ($(CONFIG_BINDER_PERFORMANCE_LATENCY_PIPE),)
+MAINSRC  += latency_pipe.cpp
+PROGNAME += latency_pipe
+endif
 
 include $(APPDIR)/Application.mk
