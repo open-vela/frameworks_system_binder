@@ -22,16 +22,21 @@ MODULE    = $(CONFIG_BINDER_PERFORMANCE_THROUGHPUT)
 PRIORITY  = SCHED_PRIORITY_DEFAULT
 STACKSIZE = $(CONFIG_BINDER_PERFORMANCE_THROUGHPUT_STACKSIZE)
 
-MAINSRC  += Benchmark_socket.cpp
-PROGNAME += Benchmark_socket
-
-MAINSRC  += throughput_server.cpp
-PROGNAME += throughput_server
-
-MAINSRC  += Benchmark_pipe.cpp
-PROGNAME += Benchmark_pipe
-
+ifneq ($(CONFIG_BINDER_PERFORMANCE_PERFORMANCE_BINDER),)
 MAINSRC  += Benchmark_binder.cpp
 PROGNAME += Benchmark_binder
+endif
+
+ifneq ($(CONFIG_BINDER_PERFORMANCE_PERFORMANCE_SOCKET),)
+MAINSRC  += throughput_server.cpp
+PROGNAME += throughput_server
+MAINSRC  += Benchmark_socket.cpp
+PROGNAME += Benchmark_socket
+endif
+
+ifneq ($(CONFIG_BINDER_PERFORMANCE_PERFORMANCE_PIPE),)
+MAINSRC  += Benchmark_pipe.cpp
+PROGNAME += Benchmark_pipe
+endif
 
 include $(APPDIR)/Application.mk

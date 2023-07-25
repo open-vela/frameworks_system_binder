@@ -23,3 +23,15 @@ config BINDER_PERFORMANCE_LATENCY_STACKSIZE
 	int "Latency test stack size"
 	depends on BINDER_PERFORMANCE_LATENCY
 	default DEFAULT_TASK_STACKSIZE
+
+config BINDER_PERFORMANCE_LATENCY_SOCKET
+	bool "Socket"
+	default n
+	depends on BINDER_PERFORMANCE_LATENCY
+	depends on NET_LOCAL
+
+config BINDER_PERFORMANCE_LATENCY_PIPE
+	bool "Pipe"
+	default n
+	depends on BINDER_PERFORMANCE_LATENCY
+	depends on PIPES
