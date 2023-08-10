@@ -27,23 +27,25 @@ static int client_socket;
 
 void BM_Socket(benchmark::State& state)
 {
-    uint8_t send_buffer[state.range(0)];
-    char recv_buffer[state.range(0)];
+    uint8_t buffer[state.range(0)];
+    uint8_t response[state.range(0)];
 
     for (int i = 0; i < state.range(0); i++) {
-        send_buffer[i] = i % 256;
+        buffer[i] = i % 256;
     }
 
     for (auto _ : state) {
-        ssize_t send_size = send(client_socket, send_buffer, sizeof(send_buffer), 0);
+        ssize_t send_size = send(client_socket, buffer, sizeof(buffer), 0);
         if (send_size < 0) {
-            perror(" Failed to send data.");
+            perror(" Failed to send data from server.");
             break;
         }
 
-        ssize_t recv_size = recv(client_socket, recv_buffer, sizeof(recv_buffer), 0);
+        memset(response, 0, sizeof(response));
+
+        ssize_t recv_size = recv(client_socket, response, sizeof(response), 0);
         if (recv_size < 0) {
-            perror(" Failed to receive data.");
+            perror(" Failed to receive data to server.");
             break;
         }
     }
