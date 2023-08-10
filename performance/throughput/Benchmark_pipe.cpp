@@ -28,25 +28,25 @@ static int pipefds[2];
 
 void BM_PipeReceive(benchmark::State& state)
 {
-    uint8_t send_buffer[state.range(0)];
-    char response[state.range(0)];
+    uint8_t buffer[state.range(0)];
+    uint8_t response[state.range(0)];
 
     for (int i = 0; i < state.range(0); i++) {
-        send_buffer[i] = i % 256;
+        buffer[i] = i % 256;
     }
 
     close(pipefd[0]);
 
     for (auto _ : state) {
-        ssize_t send_size = write(pipefd[1], send_buffer, sizeof(send_buffer));
+        ssize_t send_size = write(pipefd[1], buffer, sizeof(buffer));
         if (send_size < 0) {
-            perror("Failed to send data through pipe");
+            perror("Failed to write data through pipe");
             exit(EXIT_FAILURE);
         }
 
         ssize_t recv_size = read(pipefds[0], response, sizeof(response));
         if (recv_size < 0) {
-            perror("Failed to recv data through pipe");
+            perror("Failed to read data through pipe");
             exit(EXIT_FAILURE);
         }
     }
@@ -58,13 +58,24 @@ BENCHMARK(BM_PipeReceive)->RangeMultiplier(2)->Range(4, 1024);
 
 int startServer()
 {
-    static char buffer[BUFFER_SIZE];
+    uint8_t buffer[BUFFER_SIZE];
 
     close(pipefd[1]);
 
     while (1) {
+        memset(buffer, 0, sizeof(buffer));
+
         ssize_t recv_size = read(pipefd[0], buffer, sizeof(buffer));
-        write(pipefds[1], buffer, recv_size);
+        if (recv_size < 0) {
+            perror("Failed to read data through pipe");
+            exit(EXIT_FAILURE);
+        }
+
+        ssize_t send_size = write(pipefds[1], buffer, recv_size);
+        if (send_size < 0) {
+            perror("Failed to write data through pipe");
+            exit(EXIT_FAILURE);
+        }
     }
 
     close(pipefds[0]);
