@@ -26,11 +26,11 @@
 
 extern "C" int main(int argc, char** argv)
 {
-    static char buffer[BUFFER_SIZE];
     int client_Socket;
     int server_socket;
     struct sockaddr_un server_address, client_address;
     socklen_t client_address_len;
+    uint8_t buffer[BUFFER_SIZE];
 
     server_socket = socket(AF_LOCAL, SOCK_STREAM, 0);
     if (server_socket == -1) {
@@ -55,6 +55,7 @@ extern "C" int main(int argc, char** argv)
     }
 
     client_address_len = sizeof(client_address);
+
     while (1) {
         client_Socket = accept(server_socket, (struct sockaddr*)&client_address, &client_address_len);
         if (client_Socket == -1) {
@@ -65,6 +66,7 @@ extern "C" int main(int argc, char** argv)
 
         while (1) {
             memset(buffer, 0, sizeof(buffer));
+
             ssize_t recv_size = recv(client_Socket, buffer, sizeof(buffer), 0);
             if (recv_size < 0) {
                 perror("Failed to receive data from client.");
