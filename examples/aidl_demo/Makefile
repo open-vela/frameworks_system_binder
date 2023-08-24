@@ -45,6 +45,13 @@ MAINSRC  += TestClient.cpp
 PROGNAME += TestClient
 MAINSRC  += TestServer.cpp
 PROGNAME += TestServer
+MAINSRC  += TestServerEpoll.cpp
+PROGNAME += TestServerEpoll
+
+ifdef CONFIG_LIBUV
+MAINSRC  += TestServerLibuv.cpp
+PROGNAME += TestServerLibuv
+endif
 
 MAINSRC  += PromiseClient.cpp
 PROGNAME += PromiseClient
