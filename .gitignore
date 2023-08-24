@@ -1,0 +1,13 @@
+Kconfig
+cmds/Kconfig
+examples/Kconfig
+performance/Kconfig
+.kconfig
+*.o
+Make.dep
+examples/aidl_demo/.*
+examples/aidl_demo/Bn*
+examples/aidl_demo/Bp*
+examples/aidl_demo/IT*
+examples/aidl_demo/IN*
+examples/aidl_demo/aidl/
