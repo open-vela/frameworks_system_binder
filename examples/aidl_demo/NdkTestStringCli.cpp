@@ -16,20 +16,20 @@
 
 #include <stdio.h>
 
-#include <aidl/INdkTest.h>
+#include <aidl/INdkTestString.h>
 #include <android/binder_manager.h>
 
 extern "C" int main(int argc, char** argv)
 {
     printf("demo client start argc: %d, argv[0]: %s\n", argc, argv[0]);
 
-    ndk::SpAIBinder binder = ndk::SpAIBinder(AServiceManager_checkService("ndktest.service"));
+    ndk::SpAIBinder binder = ndk::SpAIBinder(AServiceManager_checkService("ndkteststring.service"));
     if (binder.get() == nullptr) {
         printf("binder is null\n");
         return 1;
     }
 
-    std::shared_ptr<aidl::INdkTest> proxy = aidl::INdkTest::fromBinder(binder);
+    std::shared_ptr<aidl::INdkTestString> proxy = aidl::INdkTestString::fromBinder(binder);
     if (proxy.get() == nullptr) {
         printf("proxy is null\n");
         return 1;
