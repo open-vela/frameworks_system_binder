@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-interface INdkTest {
+interface INdkTestString {
     String repeatString(String a, String b);
     @nullable String repeatNullableString(@nullable String a, @nullable String b);
 }

@@ -17,11 +17,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <aidl/BnNdkTest.h>
+#include <aidl/BnNdkTestString.h>
 #include <android/binder_manager.h>
 #include <android/binder_process.h>
 
-class MyService : public aidl::BnNdkTest {
+class MyService : public aidl::BnNdkTestString {
     ndk::ScopedAStatus repeatString(const char* in, const char* in2, char** out)
     {
         printf("%s\n", __func__);
@@ -52,7 +52,7 @@ extern "C" int main(int argc, char** argv)
     ABinderProcess_setThreadPoolMaxThreadCount(0);
     auto service = ndk::SharedRefBase::make<MyService>();
 
-    binder_status_t status = AServiceManager_addService(service->asBinder().get(), "ndktest.service");
+    binder_status_t status = AServiceManager_addService(service->asBinder().get(), "ndkteststring.service");
 
     if (status != STATUS_OK) {
         printf("could not register service\n");
