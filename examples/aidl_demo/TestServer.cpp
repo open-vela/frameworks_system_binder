@@ -34,14 +34,14 @@ public:
     // ITestServer::read()
     Status read(int32_t sample)
     {
-        ALOGD("ITest::read() called %" PRIi32 ", start do hard work", sample);
+        ALOGI("ITestServer::read() called %" PRIi32 ", start do hard work", sample);
         return Status::ok();
     }
 
     // ITestServer::write()
     Status write(int32_t index)
     {
-        ALOGD("ITest::write() called %" PRIi32 ", start do hard work", index);
+        ALOGI("ITestServer::write() called %" PRIi32 ", start do hard work", index);
         return Status::ok();
     }
 };
