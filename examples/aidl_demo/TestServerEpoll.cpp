@@ -30,19 +30,19 @@ using namespace android;
 using android::binder::Status;
 
 namespace android {
-class ITestServer : public BnTestStuff {
+class IEpollServer : public BnTestStuff {
 public:
-    // ITestServer::read()
+    // IEpollServer::read()
     Status read(int32_t sample)
     {
-        ALOGD("ITest::read() called %" PRIi32 ", start do hard work", sample);
+        ALOGI("ITestEpoll::read() called %" PRIi32 ", start do hard work", sample);
         return Status::ok();
     }
 
-    // ITestServer::write()
+    // IEpollServer::write()
     Status write(int32_t index)
     {
-        ALOGD("ITest::write() called %" PRIi32 ", start do hard work", index);
+        ALOGI("ITestEpoll::write() called %" PRIi32 ", start do hard work", index);
         return Status::ok();
     }
 };
@@ -63,7 +63,7 @@ extern "C" int main(int argc, char** argv)
     // obtain service manager
     sp<IServiceManager> sm(defaultServiceManager());
     ALOGI("defaultServiceManager(): %p", sm.get());
-    sp<ITestServer> testServer = new ITestServer;
+    sp<IEpollServer> testServer = new IEpollServer;
 
     // add service
     sm->addService(String16("aidldemo.service"), testServer);
