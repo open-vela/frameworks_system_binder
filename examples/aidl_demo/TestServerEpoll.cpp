@@ -57,9 +57,6 @@ extern "C" int main(int argc, char** argv)
 
     ALOGI("sample service start count: %d, argv[0]: %s", argc, argv[0]);
 
-    // create ProcessState
-    sp<ProcessState> proc(ProcessState::self());
-
     // obtain service manager
     sp<IServiceManager> sm(defaultServiceManager());
     ALOGI("defaultServiceManager(): %p", sm.get());
