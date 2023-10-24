@@ -304,6 +304,77 @@ class NdkTestVectorSrv : public aidl::BnNdkTestVector {
 
         return ndk::ScopedAStatus::ok();
     }
+
+    ::ndk::ScopedAStatus RepeatInOutStringVector(const char** in_input, const int32_t in_input_length, char*** in_repeated, int32_t* in_repeated_length, char*** _aidl_return, int32_t* _aidl_return_length)
+    {
+        printf("%s\n", __func__);
+        *_aidl_return_length = in_input_length;
+        if (*_aidl_return_length) {
+            *_aidl_return = (char**)malloc((*_aidl_return_length) * sizeof(char*));
+        }
+        for (int i = 0; i < in_input_length; i++) {
+            size_t input_len = strlen(in_input[i]) + strlen((*in_repeated)[i]) + 1;
+            (*_aidl_return)[i] = (char*)malloc(input_len * sizeof(char));
+            strncpy((*_aidl_return)[i], in_input[i], input_len);
+            strcat((*_aidl_return)[i], (*in_repeated)[i]);
+            strncpy((*in_repeated)[i], in_input[i], input_len);
+        }
+
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus Repeat2InOutStringList(const char** in_input, const int32_t in_input_length, char*** in_repeated, int32_t* in_repeated_length, char*** _aidl_return, int32_t* _aidl_return_length)
+    {
+        printf("%s\n", __func__);
+        *_aidl_return_length = in_input_length * 2;
+        if (*_aidl_return_length) {
+            *_aidl_return = (char**)malloc((*_aidl_return_length) * sizeof(char*));
+        }
+        for (int i = 0; i < in_input_length; i++) {
+            size_t input_len = strlen(in_input[i]) + 1;
+            (*_aidl_return)[i] = (char*)malloc(input_len * sizeof(char));
+            (*_aidl_return)[i + in_input_length] = (char*)malloc(input_len * sizeof(char));
+            strncpy((*_aidl_return)[i], in_input[i], input_len);
+            strncpy((*_aidl_return)[i + in_input_length], (*in_repeated)[i], input_len);
+            strncpy((*in_repeated)[i], in_input[i], input_len);
+        }
+
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus Repeat2InOutNullableStringList(const char** in_input, const int32_t in_input_length, char*** in_repeated, int32_t* in_repeated_length, char*** _aidl_return, int32_t* _aidl_return_length)
+    {
+        printf("%s\n", __func__);
+        *_aidl_return_length = in_input_length * 2;
+        if (*_aidl_return_length) {
+            *_aidl_return = (char**)malloc((*_aidl_return_length) * sizeof(char*));
+        }
+        for (int i = 0; i < in_input_length; i++) {
+            size_t input_len = strlen(in_input[i]) + 1;
+            (*_aidl_return)[i] = (char*)malloc(input_len * sizeof(char));
+            (*_aidl_return)[i + in_input_length] = (char*)malloc(input_len * sizeof(char));
+            strncpy((*_aidl_return)[i], in_input[i], input_len);
+            strncpy((*_aidl_return)[i + in_input_length], (*in_repeated)[i], input_len);
+            strncpy((*in_repeated)[i], in_input[i], input_len);
+        }
+
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus RepeatInOutNullableStringVector(const char** in_input, const int32_t in_input_length, char*** in_repeated, int32_t* in_repeated_length, char*** _aidl_return, int32_t* _aidl_return_length)
+    {
+        printf("%s\n", __func__);
+        *_aidl_return_length = in_input_length;
+        if (*_aidl_return_length) {
+            *_aidl_return = (char**)malloc((*_aidl_return_length) * sizeof(char*));
+        }
+        for (int i = 0; i < in_input_length; i++) {
+            size_t input_len = strlen(in_input[i]) + strlen((*in_repeated)[i]) + 1;
+            (*_aidl_return)[i] = (char*)malloc(input_len * sizeof(char));
+            strncpy((*_aidl_return)[i], in_input[i], input_len);
+            strcat((*_aidl_return)[i], (*in_repeated)[i]);
+            strncpy((*in_repeated)[i], in_input[i], input_len);
+        }
+
+        return ndk::ScopedAStatus::ok();
+    }
 };
 
 extern "C" int main(int argc, char** argv)
