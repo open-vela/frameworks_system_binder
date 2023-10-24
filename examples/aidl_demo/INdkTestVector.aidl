@@ -25,10 +25,13 @@ interface INdkTestVector
     float[] RepeatFloatVector(in float[] input, out float[] repeated);
     double[] RepeatDoubleVector(in double[] input, out double[] repeated);
     String[] RepeatStringVector(in String[] input, out String[] repeated);
+    String[] RepeatInOutStringVector(in String[] input, inout String[] repeated);
 
     // List
     List<String> Repeat2StringList(in List<String> input, out List<String> repeated);
     @nullable List<String> Repeat2NullableStringList(in @nullable List<String> input, out @nullable List<String> repeated);
+    List<String> Repeat2InOutStringList(in List<String> input, inout List<String> repeated);
+    @nullable List<String> Repeat2InOutNullableStringList(in @nullable List<String> input, inout @nullable List<String> repeated);
 
     // Nullable Arrays
     @nullable boolean[] RepeatNullableBooleanVector(in @nullable boolean[] input);
@@ -39,4 +42,5 @@ interface INdkTestVector
     @nullable float[] RepeatNullableFloatVector(in @nullable float[] input);
     @nullable double[] RepeatNullableDoubleVector(in @nullable double[] input);
     @nullable String[] RepeatNullableStringVector(in @nullable String[] input);
+    @nullable String[] RepeatInOutNullableStringVector(in @nullable String[] input, inout @nullable String[] repeated);
 }

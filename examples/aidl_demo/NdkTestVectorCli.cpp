@@ -550,5 +550,433 @@ extern "C" int main(int argc, char** argv)
     }
     free(nslret);
 
+    // @BEGIN SLT method
+    // Test STL bool vector usage
+    std::vector<bool> bin_1 = { false, false, true };
+    std::vector<bool> bout_1(3);
+    std::vector<bool> bret_1;
+    status = proxy->RepeatBooleanVector(bin_1, &bout_1, &bret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatBooleanVector error\n");
+        return 1;
+    } else {
+        printf("STL Bool out is");
+        for (auto a : bout_1) {
+            if (a) {
+                printf(" true");
+            } else {
+                printf(" false");
+            }
+        }
+        printf("\n");
+        printf("STL Bool ret is");
+        for (auto a : bret_1) {
+            if (a) {
+                printf(" true");
+            } else {
+                printf(" false");
+            }
+        }
+        printf("\n");
+    }
+
+    // Test STL byte vector usage
+    std::vector<uint8_t> byin_1 = { '1', '2', '3' };
+    std::vector<uint8_t> byout_1(3);
+    std::vector<uint8_t> byret_1;
+    status = proxy->RepeatByteVector(byin_1, &byout_1, &byret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatByteVector error\n");
+        return 1;
+    } else {
+        printf("STL Byte out is");
+        for (auto a : byout_1) {
+            printf(" %c", a);
+        }
+        printf("\n");
+        printf("STL Byte ret is");
+        for (auto a : byret_1) {
+            printf(" %c", a);
+        }
+        printf("\n");
+    }
+
+    std::vector<std::string> sin_1 = { "abc", "def", "ghi" };
+    std::vector<std::string> sout_1(3);
+    std::vector<std::string> sret_1;
+    status = proxy->RepeatStringVector(sin_1, &sout_1, &sret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatStringVector error\n");
+        return 1;
+    } else {
+        printf("STL string out is");
+        for (auto a : sout_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+        printf("STL string ret is");
+        for (auto a : sret_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+    }
+
+    std::vector<std::string> slin_1 = { "abc", "def", "ghi" };
+    std::vector<std::string> slout_1;
+    std::vector<std::string> slret_1;
+    status = proxy->Repeat2StringList(slin_1, &slout_1, &slret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL Repeat2StringList error\n");
+        return 1;
+    } else {
+        printf("STL list string out is");
+        for (auto a : slout_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+        printf("STL list string ret is");
+        for (auto a : slret_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+    }
+
+    // Test STL nullable bool vector usage
+    std::optional<std::vector<bool>> nbin_1;
+    std::optional<std::vector<bool>> nbret_1;
+    status = proxy->RepeatNullableBooleanVector(nbin_1, &nbret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatNullableBooleanVector error\n");
+        return 1;
+    } else {
+        printf("STL Nullable Bool ret is");
+        for (auto a : *nbret_1) {
+            if (a) {
+                printf(" true");
+            } else {
+                printf(" false");
+            }
+        }
+        if (!nbret_1) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test STL nullable byte vector usage
+    std::optional<std::vector<uint8_t>> nbyin_1;
+    std::optional<std::vector<uint8_t>> nbyret_1;
+    status = proxy->RepeatNullableByteVector(nbyin_1, &nbyret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatNullableByteVector error\n");
+        return 1;
+    } else {
+        printf("STL Nullable Byte ret is");
+        for (auto a : *nbyret_1) {
+            printf(" %c", a);
+        }
+        if (!nbyret_1) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test STL nullable string vector usage
+    std::optional<std::vector<std::optional<std::string>>> nsin_1 = std::vector<std::optional<std::string>> { "abc", "def", "ghi" };
+    std::optional<std::vector<std::optional<std::string>>> nsret_1;
+    status = proxy->RepeatNullableStringVector(nsin_1, &nsret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatNullableStringVector error\n");
+        return 1;
+    } else {
+        printf("STL string ret is");
+        for (auto a : *nsret_1) {
+            printf(" %s", a->c_str());
+        }
+        printf("\n");
+    }
+
+    // Test STL nullable string List usage
+    std::optional<std::vector<std::optional<std::string>>> nslin_1 = std::vector<std::optional<std::string>> { "abc", "def", "ghi" };
+    std::optional<std::vector<std::optional<std::string>>> nslout_1;
+    std::optional<std::vector<std::optional<std::string>>> nslret_1;
+    status = proxy->Repeat2NullableStringList(nslin_1, &nslout_1, &nslret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL Repeat2NullableStringList error\n");
+        return 1;
+    } else {
+        printf("STL Nullable list string out is");
+        for (auto a : *nslout_1) {
+            printf(" %s", a->c_str());
+        }
+        if (!nslout_1) {
+            printf(" null");
+        }
+        printf("\n");
+        printf("STL Nullable list string ret is");
+        for (auto a : *nslret_1) {
+            printf(" %s", a->c_str());
+        }
+        if (!nslret_1) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    // @END SLT method
+
+    // @BEGIN INOUT method
+    // Test C type inout string vector usage
+    int32_t inout_sin_len = 3;
+    char** inout_sin = (char**)(malloc(inout_sin_len * sizeof(char*)));
+    inout_sin[0] = (char*)(malloc(4 * sizeof(char)));
+    inout_sin[1] = (char*)(malloc(4 * sizeof(char)));
+    inout_sin[2] = (char*)(malloc(4 * sizeof(char)));
+    memcpy(inout_sin[0], "abc", 4);
+    memcpy(inout_sin[1], "def", 4);
+    memcpy(inout_sin[2], "ghi", 4);
+    int32_t inout_sout_len = 3;
+    char** inout_sout = (char**)(malloc(inout_sout_len * sizeof(char*)));
+    inout_sout[0] = (char*)(malloc(4 * sizeof(char)));
+    inout_sout[1] = (char*)(malloc(4 * sizeof(char)));
+    inout_sout[2] = (char*)(malloc(4 * sizeof(char)));
+    memcpy(inout_sout[0], "ABC", 4);
+    memcpy(inout_sout[1], "DEF", 4);
+    memcpy(inout_sout[2], "GHI", 4);
+    int32_t inout_sret_len = 0;
+    char** inout_sret = nullptr;
+    status = proxy->RepeatInOutStringVector(const_cast<const char**>(inout_sin), inout_sin_len, &inout_sout, &inout_sout_len, &inout_sret, &inout_sret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatInOutStringVector error\n");
+        return 1;
+    } else {
+        printf("inout String out is");
+        for (int i = 0; i < inout_sout_len; i++) {
+            printf(" %s", inout_sout[i]);
+        }
+        printf("\n");
+        printf("inout String ret is");
+        for (int i = 0; i < inout_sret_len; i++) {
+            printf(" %s", inout_sret[i]);
+        }
+        printf("\n");
+    }
+    free(inout_sin);
+    free(inout_sout);
+    free(inout_sret);
+
+    // Test STL inout string vector usage
+    std::vector<std::string> inout_sin_1 = { "abc", "def", "ghi" };
+    std::vector<std::string> inout_sout_1 = { "ABC", "DEF", "GHI" };
+    std::vector<std::string> inout_sret_1;
+    status = proxy->RepeatInOutStringVector(inout_sin_1, &inout_sout_1, &inout_sret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatInOutStringVector error\n");
+        return 1;
+    } else {
+        printf("STL inout string out is");
+        for (auto a : inout_sout_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+        printf("STL inout string ret is");
+        for (auto a : inout_sret_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+    }
+
+    // Test C type inout string list usage
+    int32_t inout_slin_len = 3;
+    char** inout_slin = (char**)(malloc(inout_slin_len * sizeof(char*)));
+    inout_slin[0] = (char*)(malloc(4 * sizeof(char)));
+    inout_slin[1] = (char*)(malloc(4 * sizeof(char)));
+    inout_slin[2] = (char*)(malloc(4 * sizeof(char)));
+    memcpy(inout_slin[0], "abc", 4);
+    memcpy(inout_slin[1], "def", 4);
+    memcpy(inout_slin[2], "ghi", 4);
+    int32_t inout_slout_len = 3;
+    char** inout_slout = (char**)(malloc(inout_slout_len * sizeof(char*)));
+    inout_slout[0] = (char*)(malloc(4 * sizeof(char)));
+    inout_slout[1] = (char*)(malloc(4 * sizeof(char)));
+    inout_slout[2] = (char*)(malloc(4 * sizeof(char)));
+    memcpy(inout_slout[0], "ABC", 4);
+    memcpy(inout_slout[1], "DEF", 4);
+    memcpy(inout_slout[2], "GHI", 4);
+    int32_t inout_slret_len = 0;
+    char** inout_slret = nullptr;
+    status = proxy->Repeat2InOutStringList(const_cast<const char**>(inout_slin), inout_slin_len, &inout_slout, &inout_slout_len, &inout_slret, &inout_slret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("Repeat2InOutStringList error\n");
+        return 1;
+    } else {
+        printf("inout String out is");
+        for (int i = 0; i < inout_slout_len; i++) {
+            printf(" %s", inout_slout[i]);
+        }
+        printf("\n");
+        printf("inout String ret is");
+        for (int i = 0; i < inout_slret_len; i++) {
+            printf(" %s", inout_slret[i]);
+        }
+        printf("\n");
+    }
+    free(inout_slin);
+    free(inout_slout);
+    free(inout_slret);
+
+    // Test STL inout string List usage
+    std::vector<std::string> inout_slin_1 = { "abc", "def", "ghi" };
+    std::vector<std::string> inout_slout_1 = { "ABC", "DEF", "GHI" };
+    std::vector<std::string> inout_slret_1;
+    status = proxy->Repeat2InOutStringList(inout_slin_1, &inout_slout_1, &inout_slret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL Repeat2InOutStringList error\n");
+        return 1;
+    } else {
+        printf("STL inout list string out is");
+        for (auto a : inout_slout_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+        printf("STL inout list string ret is");
+        for (auto a : inout_slret_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+    }
+
+    // Test C type inout nullable string list usage
+    int32_t inout_nslin_len = 3;
+    char** inout_nslin = (char**)(malloc(inout_nslin_len * sizeof(char*)));
+    inout_nslin[0] = (char*)(malloc(4 * sizeof(char)));
+    inout_nslin[1] = (char*)(malloc(4 * sizeof(char)));
+    inout_nslin[2] = (char*)(malloc(4 * sizeof(char)));
+    memcpy(inout_nslin[0], "abc", 4);
+    memcpy(inout_nslin[1], "def", 4);
+    memcpy(inout_nslin[2], "ghi", 4);
+    int32_t inout_nslout_len = 3;
+    char** inout_nslout = (char**)(malloc(inout_nslout_len * sizeof(char*)));
+    inout_nslout[0] = (char*)(malloc(4 * sizeof(char)));
+    inout_nslout[1] = (char*)(malloc(4 * sizeof(char)));
+    inout_nslout[2] = (char*)(malloc(4 * sizeof(char)));
+    memcpy(inout_nslout[0], "ABC", 4);
+    memcpy(inout_nslout[1], "DEF", 4);
+    memcpy(inout_nslout[2], "GHI", 4);
+    int32_t inout_nslret_len = 0;
+    char** inout_nslret = nullptr;
+    status = proxy->Repeat2InOutNullableStringList(const_cast<const char**>(inout_nslin), inout_nslin_len, &inout_nslout, &inout_nslout_len, &inout_nslret, &inout_nslret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("Repeat2InOutNullableStringList error\n");
+        return 1;
+    } else {
+        printf("inout Nullable String out is");
+        for (int i = 0; i < inout_nslout_len; i++) {
+            printf(" %s", inout_nslout[i]);
+        }
+        printf("\n");
+        printf("inout Nullable String ret is");
+        for (int i = 0; i < inout_nslret_len; i++) {
+            printf(" %s", inout_nslret[i]);
+        }
+        printf("\n");
+    }
+    free(inout_nslin);
+    free(inout_nslout);
+    free(inout_nslret);
+
+    // Test STL inout nullable string List usage
+    std::optional<std::vector<std::optional<std::string>>> inout_nslin_1 = std::vector<std::optional<std::string>> { "abc", "def", "ghi" };
+    std::optional<std::vector<std::optional<std::string>>> inout_nslout_1 = std::vector<std::optional<std::string>> { "ABC", "DEF", "GHI" };
+    std::optional<std::vector<std::optional<std::string>>> inout_nslret_1;
+    status = proxy->Repeat2InOutNullableStringList(inout_nslin_1, &inout_nslout_1, &inout_nslret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL Repeat2InOutNullableStringList error\n");
+        return 1;
+    } else {
+        printf("STL inout Nullable list string out is");
+        for (auto a : *inout_nslout_1) {
+            printf(" %s", a->c_str());
+        }
+        if (!inout_nslout_1) {
+            printf(" null");
+        }
+        printf("\n");
+        printf("STL inout Nullable list string ret is");
+        for (auto a : *inout_nslret_1) {
+            printf(" %s", a->c_str());
+        }
+        if (!inout_nslret_1) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+
+    // Test C type inout nullable string vector usage
+    int32_t inout_nsin_len = 3;
+    char** inout_nsin = (char**)(malloc(inout_nsin_len * sizeof(char*)));
+    inout_nsin[0] = (char*)(malloc(4 * sizeof(char)));
+    inout_nsin[1] = (char*)(malloc(4 * sizeof(char)));
+    inout_nsin[2] = (char*)(malloc(4 * sizeof(char)));
+    memcpy(inout_nsin[0], "abc", 4);
+    memcpy(inout_nsin[1], "def", 4);
+    memcpy(inout_nsin[2], "ghi", 4);
+    int32_t inout_nsout_len = 3;
+    char** inout_nsout = (char**)(malloc(inout_nsout_len * sizeof(char*)));
+    inout_nsout[0] = (char*)(malloc(4 * sizeof(char)));
+    inout_nsout[1] = (char*)(malloc(4 * sizeof(char)));
+    inout_nsout[2] = (char*)(malloc(4 * sizeof(char)));
+    memcpy(inout_nsout[0], "ABC", 4);
+    memcpy(inout_nsout[1], "DEF", 4);
+    memcpy(inout_nsout[2], "GHI", 4);
+    int32_t inout_nsret_len = 0;
+    char** inout_nsret = nullptr;
+    status = proxy->RepeatInOutNullableStringVector(const_cast<const char**>(inout_nsin), inout_nsin_len, &inout_nsout, &inout_nsout_len, &inout_nsret, &inout_nsret_len);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatInOutNullableStringVector error\n");
+        return 1;
+    } else {
+        printf("inout Nullable String out is");
+        for (int i = 0; i < inout_nsout_len; i++) {
+            printf(" %s", inout_nsout[i]);
+        }
+        printf("\n");
+        printf("inout Nullable String ret is");
+        for (int i = 0; i < inout_nsret_len; i++) {
+            printf(" %s", inout_nsret[i]);
+        }
+        printf("\n");
+    }
+    free(inout_nsin);
+    free(inout_nsout);
+    free(inout_nsret);
+
+    // Test STL inout nullable string vector usage
+    std::optional<std::vector<std::optional<std::string>>> inout_nsin_1 = std::vector<std::optional<std::string>> { "abc", "def", "ghi" };
+    std::optional<std::vector<std::optional<std::string>>> inout_nsout_1 = std::vector<std::optional<std::string>> { "ABC", "DEF", "GHI" };
+    std::optional<std::vector<std::optional<std::string>>> inout_nsret_1;
+    status = proxy->RepeatInOutNullableStringVector(inout_nsin_1, &inout_nsout_1, &inout_nsret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatInOutNullableStringVector error\n");
+        return 1;
+    } else {
+        printf("STL inout Nullable list string out is");
+        for (auto a : *inout_nsout_1) {
+            printf(" %s", a->c_str());
+        }
+        if (!inout_nsout_1) {
+            printf(" null");
+        }
+        printf("\n");
+        printf("STL inout Nullable list string ret is");
+        for (auto a : *inout_nsret_1) {
+            printf(" %s", a->c_str());
+        }
+        if (!inout_nsret_1) {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    // @END INOUT method
+
     return 0;
 }
