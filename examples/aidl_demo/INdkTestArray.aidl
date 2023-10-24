@@ -25,6 +25,7 @@ interface INdkTestArray
     float[3] RepeatFloatArray(in float[3] input, out float[3] repeated);
     double[3] RepeatDoubleArray(in double[3] input, out double[3] repeated);
     String[3] RepeatStringArray(in String[3] input, out String[3] repeated);
+    String[3] RepeatInOutStringArray(in String[3] input, inout String[3] repeated);
 
     // Nullable Arrays
     @nullable boolean[3] RepeatNullableBooleanArray(in @nullable boolean[3] input);
@@ -35,4 +36,5 @@ interface INdkTestArray
     @nullable float[3] RepeatNullableFloatArray(in @nullable float[3] input);
     @nullable double[3] RepeatNullableDoubleArray(in @nullable double[3] input);
     @nullable String[3] RepeatNullableStringArray(in @nullable String[3] input);
+    @nullable String[3] RepeatInOutNullableStringArray(in @nullable String[3] input, inout @nullable String[3] repeated);
 }

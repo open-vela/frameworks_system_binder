@@ -346,5 +346,275 @@ extern "C" int main(int argc, char** argv)
             free(nsret[i]);
         }
     }
+
+    // @BEGIN SLT method
+    // Test STL bool array usage
+    std::array<bool, 3> bin_1 = { true, true, false };
+    std::array<bool, 3> bout_1;
+    std::array<bool, 3> bret_1;
+    status = proxy->RepeatBooleanArray(bin_1, &bout_1, &bret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatBooleanArray error\n");
+        return 1;
+    } else {
+        printf("STL Bool out is");
+        for (auto a : bout_1) {
+            if (a) {
+                printf(" true");
+            } else {
+                printf(" false");
+            }
+        }
+        printf("\n");
+        printf("STL Bool ret is");
+        for (auto a : bret_1) {
+            if (a) {
+                printf(" true");
+            } else {
+                printf(" false");
+            }
+        }
+        printf("\n");
+    }
+
+    // Test STL byte array usage
+    std::array<uint8_t, 3> byin_1 = { '1', '2', '3' };
+    std::array<uint8_t, 3> byout_1;
+    std::array<uint8_t, 3> byret_1;
+    status = proxy->RepeatByteArray(byin_1, &byout_1, &byret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatByteArray error\n");
+        return 1;
+    } else {
+        printf("STL Byte out is");
+        for (auto a : byout_1) {
+            printf(" %c", a);
+        }
+        printf("\n");
+        printf("STL Byte ret is");
+        for (auto a : byret_1) {
+            printf(" %c", a);
+        }
+        printf("\n");
+    }
+
+    // Test STL string array usage
+    std::array<std::string, 3> sin_1 = { "abc", "def", "ghi" };
+    std::array<std::string, 3> sout_1;
+    std::array<std::string, 3> sret_1;
+    status = proxy->RepeatStringArray(sin_1, &sout_1, &sret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatStringArray error\n");
+        return 1;
+    } else {
+        printf("STL String out is");
+        for (auto a : sout_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+        printf("STL String ret is");
+        for (auto a : sret_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+    }
+
+    // Test STL nullable bool array usage
+    // std::optional<std::array<bool,3>> nbin_1 = std::array<bool,3>{true, false, true};
+    std::optional<std::array<bool, 3>> nbin_1;
+    std::optional<std::array<bool, 3>> nbret_1;
+    status = proxy->RepeatNullableBooleanArray(nbin_1, &nbret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatNullableBooleanArray error\n");
+        return 1;
+    } else {
+        printf("STL Nullable Bool ret is");
+        if (!nbret_1) {
+            printf(" null");
+        } else {
+            for (auto a : *nbret_1) {
+                if (a) {
+                    printf(" true");
+                } else {
+                    printf(" false");
+                }
+            }
+        }
+        printf("\n");
+    }
+
+    // Test STL nullable byte array usage
+    // std::optional<std::array<uint8_t,3>> nbyin_1 = std::array<uint8_t,3>{'1', '2', '3'};
+    std::optional<std::array<uint8_t, 3>> nbyin_1;
+    std::optional<std::array<uint8_t, 3>> nbyret_1;
+    status = proxy->RepeatNullableByteArray(nbyin_1, &nbyret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatNullableByteArray error\n");
+        return 1;
+    } else {
+        printf("STL Nullable Byte ret is");
+        if (!nbyret_1) {
+            printf(" null");
+        } else {
+            for (auto a : *nbyret_1) {
+                printf(" %c", a);
+            }
+        }
+        printf("\n");
+    }
+
+    // Test STL nullable string array usage
+    // std::optional<std::array<std::optional<std::string>, 3>> nsin_1 = std::array<std::optional<std::string>, 3>{"abc", "def", "ghi"};
+    std::optional<std::array<std::optional<std::string>, 3>> nsin_1;
+    std::optional<std::array<std::optional<std::string>, 3>> nsret_1;
+    status = proxy->RepeatNullableStringArray(nsin_1, &nsret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatNullableStringArray error\n");
+        return 1;
+    } else {
+        printf("STL string ret is");
+        if (!nsret_1) {
+            printf(" null");
+        } else {
+            for (auto a : *nsret_1) {
+                printf(" %s", a->c_str());
+            }
+        }
+        printf("\n");
+    }
+    // @END SLT method
+
+    // @BEGIN INOUT method
+    // Test C type inout string array usage
+    const char* inout_sin[3] = { "abc", "def", "ghi" };
+    char* inout_sout[3];
+    inout_sout[0] = (char*)malloc(4 * sizeof(char));
+    inout_sout[1] = (char*)malloc(4 * sizeof(char));
+    inout_sout[2] = (char*)malloc(4 * sizeof(char));
+    strcpy(inout_sout[0], "ABC");
+    strcpy(inout_sout[1], "DEF");
+    strcpy(inout_sout[2], "GHI");
+    char* inout_sret[3];
+    status = proxy->RepeatInOutStringArray(inout_sin, inout_sout, inout_sret);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatInOutStringArray error\n");
+        return 1;
+    } else {
+        printf("inout String out is");
+        for (int i = 0; i < 3; i++) {
+            printf(" %s", inout_sout[i]);
+        }
+        printf("\n");
+        printf("inout String ret is");
+        for (int i = 0; i < 3; i++) {
+            printf(" %s", inout_sret[i]);
+        }
+        printf("\n");
+    }
+    for (int i = 0; i < 3; i++) {
+        free(inout_sout[i]);
+    }
+    for (int i = 0; i < 3; i++) {
+        free(inout_sret[i]);
+    }
+
+    // Test C type inout nullable string array usage
+    const char* inout_nsin[3] = { "abc", "def", "ghi" };
+    char* inout_nsout[3];
+    inout_nsout[0] = (char*)malloc(4 * sizeof(char));
+    inout_nsout[1] = (char*)malloc(4 * sizeof(char));
+    inout_nsout[2] = (char*)malloc(4 * sizeof(char));
+    strcpy(inout_nsout[0], "ABC");
+    strcpy(inout_nsout[1], "DEF");
+    strcpy(inout_nsout[2], "GHI");
+    char** inout_nsout_p = inout_nsout;
+    char* inout_nsret[3];
+    char** inout_nsret_p = inout_nsret;
+    status = proxy->RepeatInOutNullableStringArray(inout_nsin, &inout_nsout_p, &inout_nsret_p);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("RepeatInOutNullableStringArray error\n");
+        return 1;
+    } else {
+        printf("inout nullable String out is");
+        if (inout_nsout_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %s", inout_nsout[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+        printf("inout nullable String ret is");
+        if (inout_nsret_p) {
+            for (int i = 0; i < 3; i++) {
+                printf(" %s", inout_nsret[i]);
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    if (inout_nsout_p) {
+        for (int i = 0; i < 3; i++) {
+            free(inout_nsout[i]);
+        }
+    }
+    if (inout_nsret_p) {
+        for (int i = 0; i < 3; i++) {
+            free(inout_nsret[i]);
+        }
+    }
+
+    // Test STL inout string array usage
+    std::array<std::string, 3> inout_sin_1 = { "abc", "def", "ghi" };
+    std::array<std::string, 3> inout_sout_1 = { "ABC", "DEF", "GHI" };
+    std::array<std::string, 3> inout_sret_1;
+    status = proxy->RepeatInOutStringArray(inout_sin_1, &inout_sout_1, &inout_sret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL inout RepeatInOutStringArray error\n");
+        return 1;
+    } else {
+        printf("STL inout String out is");
+        for (auto a : inout_sout_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+        printf("STL inout String ret is");
+        for (auto a : inout_sret_1) {
+            printf(" %s", a.c_str());
+        }
+        printf("\n");
+    }
+
+    // Test STL inout nullable string array usage
+    std::optional<std::array<std::optional<std::string>, 3>> inout_nsin_1 = std::array<std::optional<std::string>, 3> { "abc", "def", "ghi" };
+    std::optional<std::array<std::optional<std::string>, 3>> inout_nsout_1 = std::array<std::optional<std::string>, 3> { "ABC", "DEF", "GHI" };
+    std::optional<std::array<std::optional<std::string>, 3>> inout_nsret_1;
+    status = proxy->RepeatInOutNullableStringArray(inout_nsin_1, &inout_nsout_1, &inout_nsret_1);
+    if (AStatus_getStatus(status.get()) != STATUS_OK) {
+        printf("STL RepeatInOutNullableStringArray error\n");
+        return 1;
+    } else {
+        printf("STL inout nullable string out is");
+        if (inout_nsout_1) {
+            for (auto a : *inout_nsout_1) {
+                printf(" %s", a->c_str());
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+        printf("STL inout nullable string ret is");
+        if (inout_nsret_1) {
+            for (auto a : *inout_nsret_1) {
+                printf(" %s", a->c_str());
+            }
+        } else {
+            printf(" null");
+        }
+        printf("\n");
+    }
+    // @END INOUT method
+
     return 0;
 }

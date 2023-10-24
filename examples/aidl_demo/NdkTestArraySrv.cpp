@@ -204,6 +204,33 @@ class NdkTestArraySrv : public aidl::BnNdkTestArray {
         }
         return ndk::ScopedAStatus::ok();
     }
+    ::ndk::ScopedAStatus RepeatInOutStringArray(const char** in_input, char** in_repeated, char** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        for (int i = 0; i < 3; i++) {
+            size_t input_len = strlen(in_input[i]) + 1;
+            _aidl_return[i] = (char*)malloc(input_len * sizeof(char));
+            strncpy(_aidl_return[i], in_input[i], input_len);
+            strncpy(in_repeated[i], in_input[i], input_len);
+        }
+        return ndk::ScopedAStatus::ok();
+    }
+    ::ndk::ScopedAStatus RepeatInOutNullableStringArray(const char** in_input, char*** in_repeated, char*** _aidl_return)
+    {
+        printf("%s\n", __func__);
+        if (!in_input) {
+            printf("in_input is null\n");
+            *_aidl_return = nullptr;
+            return ndk::ScopedAStatus::ok();
+        }
+        for (int i = 0; i < 3; i++) {
+            size_t input_len = strlen(in_input[i]) + 1;
+            (*_aidl_return)[i] = (char*)malloc(input_len * sizeof(char));
+            strncpy((*_aidl_return)[i], in_input[i], input_len);
+            strncpy((*in_repeated)[i], in_input[i], input_len);
+        }
+        return ndk::ScopedAStatus::ok();
+    }
 };
 
 extern "C" int main(int argc, char** argv)
