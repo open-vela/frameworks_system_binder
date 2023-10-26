@@ -45,6 +45,14 @@ public:
         ALOGI("ITestLibuv::write() called %" PRIi32 ", start do hard work", index);
         return Status::ok();
     }
+
+    uv_poll_t* getHandle()
+    {
+        return &binder_handle;
+    }
+
+private:
+    uv_poll_t binder_handle;
 };
 } // namespace android
 
@@ -57,7 +65,6 @@ static void uv_binder_cb(uv_poll_t* handle, int status, int events)
 
 extern "C" int main(int argc, char** argv)
 {
-    uv_poll_t binder_handle;
     int fd;
 
     ALOGI("sample service start count: %d, argv[0]: %s", argc, argv[0]);
@@ -78,11 +85,11 @@ extern "C" int main(int argc, char** argv)
     }
 
     IPCThreadState::self()->flushCommands(); // flush BC_ENTER_LOOPER
-    uv_poll_init(uv_default_loop(), &binder_handle, fd);
-    uv_poll_start(&binder_handle, UV_READABLE, uv_binder_cb);
+    uv_poll_init(uv_default_loop(), testServer->getHandle(), fd);
+    uv_poll_start(testServer->getHandle(), UV_READABLE, uv_binder_cb);
 
     uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-    uv_close((uv_handle_t*)&binder_handle, NULL);
+    uv_close((uv_handle_t*)(testServer->getHandle()), NULL);
     IPCThreadState::self()->stopProcess();
 
     return 0;
