@@ -317,7 +317,7 @@ class NdkTestVectorSrv : public aidl::BnNdkTestVector {
             (*_aidl_return)[i] = (char*)malloc(input_len * sizeof(char));
             strncpy((*_aidl_return)[i], in_input[i], input_len);
             strcat((*_aidl_return)[i], (*in_repeated)[i]);
-            strncpy((*in_repeated)[i], in_input[i], input_len);
+            strncpy((*in_repeated)[i], in_input[i], strlen((*in_repeated)[i]) + 1);
         }
 
         return ndk::ScopedAStatus::ok();
@@ -370,7 +370,7 @@ class NdkTestVectorSrv : public aidl::BnNdkTestVector {
             (*_aidl_return)[i] = (char*)malloc(input_len * sizeof(char));
             strncpy((*_aidl_return)[i], in_input[i], input_len);
             strcat((*_aidl_return)[i], (*in_repeated)[i]);
-            strncpy((*in_repeated)[i], in_input[i], input_len);
+            strncpy((*in_repeated)[i], in_input[i], strlen((*in_repeated)[i]) + 1);
         }
 
         return ndk::ScopedAStatus::ok();
