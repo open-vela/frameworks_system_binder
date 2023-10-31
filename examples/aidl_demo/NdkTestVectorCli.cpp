@@ -760,8 +760,17 @@ extern "C" int main(int argc, char** argv)
         }
         printf("\n");
     }
+    for (int i = 0; i < inout_sin_len; i++) {
+        free(inout_sin[i]);
+    }
     free(inout_sin);
+    for (int i = 0; i < inout_sout_len; i++) {
+        free(inout_sout[i]);
+    }
     free(inout_sout);
+    for (int i = 0; i < inout_sret_len; i++) {
+        free(inout_sret[i]);
+    }
     free(inout_sret);
 
     // Test STL inout string vector usage
@@ -820,8 +829,17 @@ extern "C" int main(int argc, char** argv)
         }
         printf("\n");
     }
+    for (int i = 0; i < inout_slin_len; i++) {
+        free(inout_slin[i]);
+    }
     free(inout_slin);
+    for (int i = 0; i < inout_slout_len; i++) {
+        free(inout_slout[i]);
+    }
     free(inout_slout);
+    for (int i = 0; i < inout_slret_len; i++) {
+        free(inout_slret[i]);
+    }
     free(inout_slret);
 
     // Test STL inout string List usage
@@ -880,8 +898,17 @@ extern "C" int main(int argc, char** argv)
         }
         printf("\n");
     }
+    for (int i = 0; i < inout_nslin_len; i++) {
+        free(inout_nslin[i]);
+    }
     free(inout_nslin);
+    for (int i = 0; i < inout_nslout_len; i++) {
+        free(inout_nslout[i]);
+    }
     free(inout_nslout);
+    for (int i = 0; i < inout_nslret_len; i++) {
+        free(inout_nslret[i]);
+    }
     free(inout_nslret);
 
     // Test STL inout nullable string List usage
@@ -946,8 +973,17 @@ extern "C" int main(int argc, char** argv)
         }
         printf("\n");
     }
+    for (int i = 0; i < inout_nsin_len; i++) {
+        free(inout_nsin[i]);
+    }
     free(inout_nsin);
+    for (int i = 0; i < inout_nsout_len; i++) {
+        free(inout_nsout[i]);
+    }
     free(inout_nsout);
+    for (int i = 0; i < inout_nsret_len; i++) {
+        free(inout_nsret[i]);
+    }
     free(inout_nsret);
 
     // Test STL inout nullable string vector usage
