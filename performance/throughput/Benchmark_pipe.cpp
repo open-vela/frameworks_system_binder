@@ -56,7 +56,7 @@ void BM_PipeReceive(benchmark::State& state)
 
 BENCHMARK(BM_PipeReceive)->RangeMultiplier(2)->Range(4, 1024);
 
-int startServer()
+static void startServer()
 {
     uint8_t buffer[BUFFER_SIZE];
 

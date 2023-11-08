@@ -62,17 +62,16 @@ public:
     }
 };
 
-bool startServer()
+static void startServer()
 {
     sp<BenchmarkService> service = new BenchmarkService();
     // Tells the kernel to spawn zero threads, but startThreadPool() below will still spawn one.
     defaultServiceManager()->addService(String16(kServiceName),
         service);
     ProcessState::self()->startThreadPool();
-    return 0;
 }
 
-static void BM_sendVec_binder(benchmark::State& state)
+void BM_sendVec(benchmark::State& state)
 {
     sp<IBinder> service;
     sp<IServiceManager> sm = defaultServiceManager();
@@ -97,7 +96,7 @@ static void BM_sendVec_binder(benchmark::State& state)
     }
 }
 
-BENCHMARK(BM_sendVec_binder)->RangeMultiplier(2)->Range(4, 65536);
+BENCHMARK(BM_sendVec)->RangeMultiplier(2)->Range(4, 65536);
 
 extern "C" int main(int argc, char* argv[])
 {
