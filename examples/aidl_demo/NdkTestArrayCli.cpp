@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
+#define LOG_TAG "NdkTestArrayCli"
+
 #include <inttypes.h>
 #include <stdio.h>
 
 #include <aidl/INdkTestArray.h>
 #include <android/binder_manager.h>
+#include <utils/Log.h>
 
-extern "C" int main(int argc, char** argv)
+bool testCTypeArrayUsage(std::shared_ptr<aidl::INdkTestArray> proxy)
 {
-    printf("vector demo client start argc: %d, argv[0]: %s\n", argc, argv[0]);
-
     ndk::ScopedAStatus status;
-
-    ndk::SpAIBinder binder = ndk::SpAIBinder(AServiceManager_checkService("ndktestarray.service"));
-    if (binder.get() == nullptr) {
-        printf("binder is null\n");
-        return 1;
-    }
-
-    std::shared_ptr<aidl::INdkTestArray> proxy = aidl::INdkTestArray::fromBinder(binder);
-    if (proxy.get() == nullptr) {
-        printf("proxy is null\n");
-        return 1;
-    }
 
     // Test C type bool array usage
     bool bin[3] = { true, true, false };
@@ -169,6 +158,13 @@ extern "C" int main(int argc, char** argv)
         free(sout[i]);
         free(sret[i]);
     }
+
+    return true;
+}
+
+bool testCTypeNullableArrayUsage(std::shared_ptr<aidl::INdkTestArray> proxy)
+{
+    ndk::ScopedAStatus status;
 
     // Test C type nullable bool array usage
     // bool nbin[3] = { true, true, false };
@@ -347,6 +343,13 @@ extern "C" int main(int argc, char** argv)
         }
     }
 
+    return true;
+}
+
+bool testSTLArrayUsage(std::shared_ptr<aidl::INdkTestArray> proxy)
+{
+    ndk::ScopedAStatus status;
+
     // @BEGIN SLT method
     // Test STL bool array usage
     std::array<bool, 3> bin_1 = { true, true, false };
@@ -419,6 +422,13 @@ extern "C" int main(int argc, char** argv)
         printf("\n");
     }
 
+    return true;
+}
+
+bool testSTLNullableArrayUsage(std::shared_ptr<aidl::INdkTestArray> proxy)
+{
+    ndk::ScopedAStatus status;
+
     // Test STL nullable bool array usage
     // std::optional<std::array<bool,3>> nbin_1 = std::array<bool,3>{true, false, true};
     std::optional<std::array<bool, 3>> nbin_1;
@@ -483,6 +493,13 @@ extern "C" int main(int argc, char** argv)
         printf("\n");
     }
     // @END SLT method
+
+    return true;
+}
+
+bool testInOutArrayUsage(std::shared_ptr<aidl::INdkTestArray> proxy)
+{
+    ndk::ScopedAStatus status;
 
     // @BEGIN INOUT method
     // Test C type inout string array usage
@@ -615,6 +632,57 @@ extern "C" int main(int argc, char** argv)
         printf("\n");
     }
     // @END INOUT method
+
+    return true;
+}
+
+extern "C" int main(int argc, char** argv)
+{
+    printf("vector demo client start argc: %d, argv[0]: %s\n", argc, argv[0]);
+
+    ndk::ScopedAStatus status;
+
+    ndk::SpAIBinder binder = ndk::SpAIBinder(AServiceManager_checkService("ndktestarray.service"));
+    if (binder.get() == nullptr) {
+        printf("binder is null\n");
+        return 1;
+    }
+
+    std::shared_ptr<aidl::INdkTestArray> proxy = aidl::INdkTestArray::fromBinder(binder);
+    if (proxy.get() == nullptr) {
+        printf("proxy is null\n");
+        return 1;
+    }
+
+    if (!testCTypeArrayUsage(proxy)) {
+        ALOGE("testCTypeArrayUsage NOT PASS");
+    } else {
+        ALOGI("testCTypeArrayUsage OK");
+    }
+
+    if (!testCTypeNullableArrayUsage(proxy)) {
+        ALOGE("testCTypeNullableArrayUsage NOT PASS");
+    } else {
+        ALOGI("testCTypeNullableArrayUsage OK");
+    }
+
+    if (!testSTLArrayUsage(proxy)) {
+        ALOGE("testSTLArrayUsage NOT PASS");
+    } else {
+        ALOGI("testSTLArrayUsage OK");
+    }
+
+    if (!testSTLNullableArrayUsage(proxy)) {
+        ALOGE("testSTLNullableArrayUsage NOT PASS");
+    } else {
+        ALOGI("testSTLNullableArrayUsage OK");
+    }
+
+    if (!testInOutArrayUsage(proxy)) {
+        ALOGE("testInOutArrayUsage NOT PASS");
+    } else {
+        ALOGI("testInOutArrayUsage OK");
+    }
 
     return 0;
 }
