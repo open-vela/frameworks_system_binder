@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
+#define LOG_TAG "NdkTestVectorCli"
+
 #include <inttypes.h>
 #include <stdio.h>
 
 #include <aidl/INdkTestVector.h>
 #include <android/binder_manager.h>
+#include <utils/Log.h>
 
-extern "C" int main(int argc, char** argv)
+bool testCTypeVectorUsage(std::shared_ptr<aidl::INdkTestVector> proxy)
 {
-    printf("vector demo client start argc: %d, argv[0]: %s\n", argc, argv[0]);
-
     ndk::ScopedAStatus status;
-
-    ndk::SpAIBinder binder = ndk::SpAIBinder(AServiceManager_checkService("ndktestvector.service"));
-    if (binder.get() == nullptr) {
-        printf("binder is null\n");
-        return 1;
-    }
-
-    std::shared_ptr<aidl::INdkTestVector> proxy = aidl::INdkTestVector::fromBinder(binder);
-    if (proxy.get() == nullptr) {
-        printf("proxy is null\n");
-        return 1;
-    }
 
     // Test C type bool vector usage
     int32_t bin_len = 3;
@@ -48,8 +37,8 @@ extern "C" int main(int argc, char** argv)
     bool* bret = nullptr;
     status = proxy->RepeatBooleanVector(bin, bin_len, &bout, &bout_len, &bret, &bret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatBooleanVector error\n");
-        return 1;
+        ALOGE("RepeatBooleanVector error\n");
+        return false;
     } else {
         printf("Bool out is");
         if (!bout) {
@@ -91,8 +80,8 @@ extern "C" int main(int argc, char** argv)
     uint8_t* byret = nullptr;
     status = proxy->RepeatByteVector(byin, byin_len, &byout, &byout_len, &byret, &byret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatByteVector error\n");
-        return 1;
+        ALOGE("RepeatByteVector error\n");
+        return false;
     } else {
         printf("Byte out is");
         if (!byout) {
@@ -125,8 +114,8 @@ extern "C" int main(int argc, char** argv)
     char16_t* cret = nullptr;
     status = proxy->RepeatCharVector(cin, cin_len, &cout, &cout_len, &cret, &cret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatCharVector error\n");
-        return 1;
+        ALOGE("RepeatCharVector error\n");
+        return false;
     } else {
         printf("Char out is");
         for (int i = 0; i < cout_len; i++) {
@@ -151,8 +140,8 @@ extern "C" int main(int argc, char** argv)
     int32_t* iret = nullptr;
     status = proxy->RepeatIntVector(iin, iin_len, &iout, &iout_len, &iret, &iret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatIntVector error\n");
-        return 1;
+        ALOGE("RepeatIntVector error\n");
+        return false;
     } else {
         printf("Int out is");
         for (int i = 0; i < iout_len; i++) {
@@ -177,8 +166,8 @@ extern "C" int main(int argc, char** argv)
     int64_t* lret = nullptr;
     status = proxy->RepeatLongVector(lin, lin_len, &lout, &lout_len, &lret, &lret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatLongVector error\n");
-        return 1;
+        ALOGE("RepeatLongVector error\n");
+        return false;
     } else {
         printf("Long out is");
         for (int i = 0; i < lout_len; i++) {
@@ -203,8 +192,8 @@ extern "C" int main(int argc, char** argv)
     float* fret = nullptr;
     status = proxy->RepeatFloatVector(fin, fin_len, &fout, &fout_len, &fret, &fret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatFloatVector error\n");
-        return 1;
+        ALOGE("RepeatFloatVector error\n");
+        return false;
     } else {
         printf("Float out is");
         for (int i = 0; i < fout_len; i++) {
@@ -229,8 +218,8 @@ extern "C" int main(int argc, char** argv)
     double* dret = nullptr;
     status = proxy->RepeatDoubleVector(din, din_len, &dout, &dout_len, &dret, &dret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatDoubleVector error\n");
-        return 1;
+        ALOGE("RepeatDoubleVector error\n");
+        return false;
     } else {
         printf("Double out is");
         for (int i = 0; i < dout_len; i++) {
@@ -256,8 +245,8 @@ extern "C" int main(int argc, char** argv)
     char** sret = nullptr;
     status = proxy->RepeatStringVector(sin, sin_len, &sout, &sout_len, &sret, &sret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatStringVector error\n");
-        return 1;
+        ALOGE("RepeatStringVector error\n");
+        return false;
     } else {
         printf("String out is");
         if (!sout) {
@@ -296,8 +285,8 @@ extern "C" int main(int argc, char** argv)
     char** slret = nullptr;
     status = proxy->Repeat2StringList(slin, slin_len, &slout, &slout_len, &slret, &slret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("Repeat2StringList error\n");
-        return 1;
+        ALOGE("Repeat2StringList error\n");
+        return false;
     } else {
         printf("String out is");
         for (int i = 0; i < slout_len; i++) {
@@ -319,6 +308,13 @@ extern "C" int main(int argc, char** argv)
     }
     free(slret);
 
+    return true;
+}
+
+bool testCTypeNullableVectorUsage(std::shared_ptr<aidl::INdkTestVector> proxy)
+{
+    ndk::ScopedAStatus status;
+
     // Test C type nullable bool vector usage
     int32_t nbin_len = 0;
     bool* nbin = nullptr;
@@ -328,8 +324,8 @@ extern "C" int main(int argc, char** argv)
     bool* nbret = nullptr;
     status = proxy->RepeatNullableBooleanVector(nbin, nbin_len, &nbret, &nbret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatNullableBooleanVector error\n");
-        return 1;
+        ALOGE("RepeatNullableBooleanVector error\n");
+        return false;
     } else {
         printf("Nullable Bool ret is");
         for (int i = 0; i < nbret_len; i++) {
@@ -355,8 +351,8 @@ extern "C" int main(int argc, char** argv)
     uint8_t* nbyret = nullptr;
     status = proxy->RepeatNullableByteVector(nbyin, nbyin_len, &nbyret, &nbyret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatNullableByteVector error\n");
-        return 1;
+        ALOGE("RepeatNullableByteVector error\n");
+        return false;
     } else {
         printf("Nullable Byte ret is");
         for (int i = 0; i < nbyret_len; i++) {
@@ -378,8 +374,8 @@ extern "C" int main(int argc, char** argv)
     char16_t* ncret = nullptr;
     status = proxy->RepeatNullableCharVector(ncin, ncin_len, &ncret, &ncret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatNullableCharVector error\n");
-        return 1;
+        ALOGE("RepeatNullableCharVector error\n");
+        return false;
     } else {
         printf("Nullable Char ret is");
         for (int i = 0; i < ncret_len; i++) {
@@ -401,8 +397,8 @@ extern "C" int main(int argc, char** argv)
     int32_t* niret = nullptr;
     status = proxy->RepeatNullableIntVector(niin, niin_len, &niret, &niret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatNullableIntVector error\n");
-        return 1;
+        ALOGE("RepeatNullableIntVector error\n");
+        return false;
     } else {
         printf("Nullable Int ret is");
         for (int i = 0; i < niret_len; i++) {
@@ -424,8 +420,8 @@ extern "C" int main(int argc, char** argv)
     int64_t* nlret = nullptr;
     status = proxy->RepeatNullableLongVector(nlin, nlin_len, &nlret, &nlret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatNullableLongVector error\n");
-        return 1;
+        ALOGE("RepeatNullableLongVector error\n");
+        return false;
     } else {
         printf("Nullable Long ret is");
         for (int i = 0; i < nlret_len; i++) {
@@ -447,8 +443,8 @@ extern "C" int main(int argc, char** argv)
     float* nfret = nullptr;
     status = proxy->RepeatNullableFloatVector(nfin, nfin_len, &nfret, &nfret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatNullableFloatVector error\n");
-        return 1;
+        ALOGE("RepeatNullableFloatVector error\n");
+        return false;
     } else {
         printf("Nullable Float ret is");
         for (int i = 0; i < nfret_len; i++) {
@@ -470,8 +466,8 @@ extern "C" int main(int argc, char** argv)
     double* ndret = nullptr;
     status = proxy->RepeatNullableDoubleVector(ndin, ndin_len, &ndret, &ndret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatNullableDoubleVector error\n");
-        return 1;
+        ALOGE("RepeatNullableDoubleVector error\n");
+        return false;
     } else {
         printf("Nullable Double ret is");
         for (int i = 0; i < ndret_len; i++) {
@@ -493,8 +489,8 @@ extern "C" int main(int argc, char** argv)
     char** nsret = nullptr;
     status = proxy->RepeatNullableStringVector(nsin, nsin_len, &nsret, &nsret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatNullableStringVector error\n");
-        return 1;
+        ALOGE("RepeatNullableStringVector error\n");
+        return false;
     } else {
         printf("Nullable String ret is");
         for (int i = 0; i < nsret_len; i++) {
@@ -521,8 +517,8 @@ extern "C" int main(int argc, char** argv)
     char** nslret = nullptr;
     status = proxy->Repeat2NullableStringList(nslin, nslin_len, &nslout, &nslout_len, &nslret, &nslret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("Repeat2NullableStringList error\n");
-        return 1;
+        ALOGE("Repeat2NullableStringList error\n");
+        return false;
     } else {
         printf("Nullable String list out is");
         for (int i = 0; i < nslout_len; i++) {
@@ -550,6 +546,13 @@ extern "C" int main(int argc, char** argv)
     }
     free(nslret);
 
+    return true;
+}
+
+bool testSTLVectorUsage(std::shared_ptr<aidl::INdkTestVector> proxy)
+{
+    ndk::ScopedAStatus status;
+
     // @BEGIN SLT method
     // Test STL bool vector usage
     std::vector<bool> bin_1 = { false, false, true };
@@ -557,8 +560,8 @@ extern "C" int main(int argc, char** argv)
     std::vector<bool> bret_1;
     status = proxy->RepeatBooleanVector(bin_1, &bout_1, &bret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL RepeatBooleanVector error\n");
-        return 1;
+        ALOGE("STL RepeatBooleanVector error\n");
+        return false;
     } else {
         printf("STL Bool out is");
         for (auto a : bout_1) {
@@ -586,8 +589,8 @@ extern "C" int main(int argc, char** argv)
     std::vector<uint8_t> byret_1;
     status = proxy->RepeatByteVector(byin_1, &byout_1, &byret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL RepeatByteVector error\n");
-        return 1;
+        ALOGE("STL RepeatByteVector error\n");
+        return false;
     } else {
         printf("STL Byte out is");
         for (auto a : byout_1) {
@@ -606,8 +609,8 @@ extern "C" int main(int argc, char** argv)
     std::vector<std::string> sret_1;
     status = proxy->RepeatStringVector(sin_1, &sout_1, &sret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL RepeatStringVector error\n");
-        return 1;
+        ALOGE("STL RepeatStringVector error\n");
+        return false;
     } else {
         printf("STL string out is");
         for (auto a : sout_1) {
@@ -626,8 +629,8 @@ extern "C" int main(int argc, char** argv)
     std::vector<std::string> slret_1;
     status = proxy->Repeat2StringList(slin_1, &slout_1, &slret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL Repeat2StringList error\n");
-        return 1;
+        ALOGE("STL Repeat2StringList error\n");
+        return false;
     } else {
         printf("STL list string out is");
         for (auto a : slout_1) {
@@ -641,13 +644,21 @@ extern "C" int main(int argc, char** argv)
         printf("\n");
     }
 
+    return true;
+    // @END SLT method
+}
+
+bool testSTLNullableVectorUsage(std::shared_ptr<aidl::INdkTestVector> proxy)
+{
+    ndk::ScopedAStatus status;
+
     // Test STL nullable bool vector usage
     std::optional<std::vector<bool>> nbin_1;
     std::optional<std::vector<bool>> nbret_1;
     status = proxy->RepeatNullableBooleanVector(nbin_1, &nbret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL RepeatNullableBooleanVector error\n");
-        return 1;
+        ALOGE("STL RepeatNullableBooleanVector error\n");
+        return false;
     } else {
         printf("STL Nullable Bool ret is");
         for (auto a : *nbret_1) {
@@ -668,8 +679,8 @@ extern "C" int main(int argc, char** argv)
     std::optional<std::vector<uint8_t>> nbyret_1;
     status = proxy->RepeatNullableByteVector(nbyin_1, &nbyret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL RepeatNullableByteVector error\n");
-        return 1;
+        ALOGE("STL RepeatNullableByteVector error\n");
+        return false;
     } else {
         printf("STL Nullable Byte ret is");
         for (auto a : *nbyret_1) {
@@ -686,8 +697,8 @@ extern "C" int main(int argc, char** argv)
     std::optional<std::vector<std::optional<std::string>>> nsret_1;
     status = proxy->RepeatNullableStringVector(nsin_1, &nsret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL RepeatNullableStringVector error\n");
-        return 1;
+        ALOGE("STL RepeatNullableStringVector error\n");
+        return false;
     } else {
         printf("STL string ret is");
         for (auto a : *nsret_1) {
@@ -702,8 +713,8 @@ extern "C" int main(int argc, char** argv)
     std::optional<std::vector<std::optional<std::string>>> nslret_1;
     status = proxy->Repeat2NullableStringList(nslin_1, &nslout_1, &nslret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL Repeat2NullableStringList error\n");
-        return 1;
+        ALOGE("STL Repeat2NullableStringList error\n");
+        return false;
     } else {
         printf("STL Nullable list string out is");
         for (auto a : *nslout_1) {
@@ -722,7 +733,13 @@ extern "C" int main(int argc, char** argv)
         }
         printf("\n");
     }
-    // @END SLT method
+
+    return true;
+}
+
+bool testInOutVectorUsage(std::shared_ptr<aidl::INdkTestVector> proxy)
+{
+    ndk::ScopedAStatus status;
 
     // @BEGIN INOUT method
     // Test C type inout string vector usage
@@ -746,8 +763,8 @@ extern "C" int main(int argc, char** argv)
     char** inout_sret = nullptr;
     status = proxy->RepeatInOutStringVector(const_cast<const char**>(inout_sin), inout_sin_len, &inout_sout, &inout_sout_len, &inout_sret, &inout_sret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatInOutStringVector error\n");
-        return 1;
+        ALOGE("RepeatInOutStringVector error\n");
+        return false;
     } else {
         printf("inout String out is");
         for (int i = 0; i < inout_sout_len; i++) {
@@ -779,8 +796,8 @@ extern "C" int main(int argc, char** argv)
     std::vector<std::string> inout_sret_1;
     status = proxy->RepeatInOutStringVector(inout_sin_1, &inout_sout_1, &inout_sret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL RepeatInOutStringVector error\n");
-        return 1;
+        ALOGE("STL RepeatInOutStringVector error\n");
+        return false;
     } else {
         printf("STL inout string out is");
         for (auto a : inout_sout_1) {
@@ -815,8 +832,8 @@ extern "C" int main(int argc, char** argv)
     char** inout_slret = nullptr;
     status = proxy->Repeat2InOutStringList(const_cast<const char**>(inout_slin), inout_slin_len, &inout_slout, &inout_slout_len, &inout_slret, &inout_slret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("Repeat2InOutStringList error\n");
-        return 1;
+        ALOGE("Repeat2InOutStringList error\n");
+        return false;
     } else {
         printf("inout String out is");
         for (int i = 0; i < inout_slout_len; i++) {
@@ -848,8 +865,8 @@ extern "C" int main(int argc, char** argv)
     std::vector<std::string> inout_slret_1;
     status = proxy->Repeat2InOutStringList(inout_slin_1, &inout_slout_1, &inout_slret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL Repeat2InOutStringList error\n");
-        return 1;
+        ALOGE("STL Repeat2InOutStringList error\n");
+        return false;
     } else {
         printf("STL inout list string out is");
         for (auto a : inout_slout_1) {
@@ -862,6 +879,14 @@ extern "C" int main(int argc, char** argv)
         }
         printf("\n");
     }
+
+    return true;
+    // @END INOUT method
+}
+
+bool testInOutNullabeVectorUsage(std::shared_ptr<aidl::INdkTestVector> proxy)
+{
+    ndk::ScopedAStatus status;
 
     // Test C type inout nullable string list usage
     int32_t inout_nslin_len = 3;
@@ -884,8 +909,8 @@ extern "C" int main(int argc, char** argv)
     char** inout_nslret = nullptr;
     status = proxy->Repeat2InOutNullableStringList(const_cast<const char**>(inout_nslin), inout_nslin_len, &inout_nslout, &inout_nslout_len, &inout_nslret, &inout_nslret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("Repeat2InOutNullableStringList error\n");
-        return 1;
+        ALOGE("Repeat2InOutNullableStringList error\n");
+        return false;
     } else {
         printf("inout Nullable String out is");
         for (int i = 0; i < inout_nslout_len; i++) {
@@ -917,8 +942,8 @@ extern "C" int main(int argc, char** argv)
     std::optional<std::vector<std::optional<std::string>>> inout_nslret_1;
     status = proxy->Repeat2InOutNullableStringList(inout_nslin_1, &inout_nslout_1, &inout_nslret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL Repeat2InOutNullableStringList error\n");
-        return 1;
+        ALOGE("STL Repeat2InOutNullableStringList error\n");
+        return false;
     } else {
         printf("STL inout Nullable list string out is");
         for (auto a : *inout_nslout_1) {
@@ -959,8 +984,8 @@ extern "C" int main(int argc, char** argv)
     char** inout_nsret = nullptr;
     status = proxy->RepeatInOutNullableStringVector(const_cast<const char**>(inout_nsin), inout_nsin_len, &inout_nsout, &inout_nsout_len, &inout_nsret, &inout_nsret_len);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("RepeatInOutNullableStringVector error\n");
-        return 1;
+        ALOGE("RepeatInOutNullableStringVector error\n");
+        return false;
     } else {
         printf("inout Nullable String out is");
         for (int i = 0; i < inout_nsout_len; i++) {
@@ -992,8 +1017,8 @@ extern "C" int main(int argc, char** argv)
     std::optional<std::vector<std::optional<std::string>>> inout_nsret_1;
     status = proxy->RepeatInOutNullableStringVector(inout_nsin_1, &inout_nsout_1, &inout_nsret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
-        printf("STL RepeatInOutNullableStringVector error\n");
-        return 1;
+        ALOGE("STL RepeatInOutNullableStringVector error\n");
+        return false;
     } else {
         printf("STL inout Nullable list string out is");
         for (auto a : *inout_nsout_1) {
@@ -1012,7 +1037,63 @@ extern "C" int main(int argc, char** argv)
         }
         printf("\n");
     }
-    // @END INOUT method
+
+    return true;
+}
+
+extern "C" int main(int argc, char** argv)
+{
+    ALOGI("vector demo client start argc: %d, argv[0]: %s\n", argc, argv[0]);
+
+    ndk::ScopedAStatus status;
+
+    ndk::SpAIBinder binder = ndk::SpAIBinder(AServiceManager_checkService("ndktestvector.service"));
+    if (binder.get() == nullptr) {
+        ALOGE("binder is null\n");
+        return 1;
+    }
+
+    std::shared_ptr<aidl::INdkTestVector> proxy = aidl::INdkTestVector::fromBinder(binder);
+    if (proxy.get() == nullptr) {
+        ALOGE("proxy is null\n");
+        return 1;
+    }
+
+    if (!testCTypeVectorUsage(proxy)) {
+        ALOGE("testCTypeVectorUsage NOT PASS");
+    } else {
+        ALOGI("testCTypeVectorUsage OK");
+    }
+
+    if (!testCTypeNullableVectorUsage(proxy)) {
+        ALOGE("testNullableVectorUsage NOT PASS");
+    } else {
+        ALOGI("testNullableVectorUsage OK");
+    }
+
+    if (!testSTLVectorUsage(proxy)) {
+        ALOGE("testSTLVectorUsage NOT PASS");
+    } else {
+        ALOGI("testSTLVectorUsage OK");
+    }
+
+    if (!testSTLNullableVectorUsage(proxy)) {
+        ALOGE("testSTLNullableVectorUsage NOT PASS");
+    } else {
+        ALOGI("testSTLNullableVectorUsage OK");
+    }
+
+    if (!testInOutVectorUsage(proxy)) {
+        ALOGE("testInOutVectorUsage NOT PASS");
+    } else {
+        ALOGI("testInOutVectorUsage OK");
+    }
+
+    if (!testInOutNullabeVectorUsage(proxy)) {
+        ALOGE("testInOutNullabeVectorUsage NOT PASS");
+    } else {
+        ALOGI("testInOutNullabeVectorUsage OK");
+    }
 
     return 0;
 }
