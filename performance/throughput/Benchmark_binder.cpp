@@ -100,28 +100,14 @@ BENCHMARK(BM_sendVec)->RangeMultiplier(2)->Range(4, 65536);
 
 extern "C" int main(int argc, char* argv[])
 {
-    pid_t pid;
-    int pipe_fd[2];
-    pipe(pipe_fd);
-
-    pid = fork();
+    pid_t pid = fork();
 
     if (pid == 0) {
-        // Child, close read end of the pipe
-        close(pipe_fd[0]);
         ::benchmark::RunSpecifiedBenchmarks();
-        // Notify parent that benchmarks are finished
-        char buf[1] = { 1 };
-        write(pipe_fd[1], buf, 1);
-        close(pipe_fd[1]);
+        exit(EXIT_SUCCESS);
     } else {
-        // Parent, close write end of the pipe
-        close(pipe_fd[1]);
         startServer();
         // Wait for child to finish
-        char buf[1];
-        read(pipe_fd[0], buf, 1);
-        close(pipe_fd[0]);
         while (true) {
             int stat, retval;
             retval = wait(&stat);
