@@ -18,7 +18,8 @@
 
 #include "BnTestStuff.h"
 
-#include <binder/RpcServer.h>
+#include <binder/ICpcServiceManager.h>
+#include <binder/IPCThreadState.h>
 #include <utils/Log.h>
 
 using namespace android;
@@ -44,13 +45,11 @@ extern "C" int main(int argc, char** argv)
 {
     ALOGI("sample service start count: %d, argv[0]: %s", argc, argv[0]);
     sp<ITestServer> testServer = new ITestServer;
-    sp<RpcServer> server = RpcServer::make();
 
-    server->setRootObject(testServer);
-    auto status = server->setupRpmsgSockServer("cpc");
-    ALOGI("setupCpcSockServer %" PRIi32 "\n", status);
+    sp<IServiceManager> sm(defaultCpcServiceManager());
+    sm->addService(String16("cpctest"), testServer);
 
-    server->join();
+    IPCThreadState::self()->joinThreadPool();
 
     return 0;
 }
