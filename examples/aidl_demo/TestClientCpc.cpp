@@ -18,7 +18,7 @@
 
 #include "ITestStuff.h"
 
-#include <binder/RpcSession.h>
+#include <binder/ICpcServiceManager.h>
 #include <utils/Log.h>
 
 using namespace android;
@@ -26,12 +26,12 @@ using android::binder::Status;
 
 extern "C" int main(int argc, char** argv)
 {
-    ALOGI("client RpcSession::make...");
-    auto session = RpcSession::make();
-    auto status = session->setupRpmsgSockClient("ap", "cpc");
-    ALOGI("session->setupCpcSockClient:%" PRIi32, status);
+    sp<IServiceManager> sm(defaultCpcServiceManager());
 
-    auto remoteBinder = session->getRootObject();
+    auto remoteBinder = sm->getService(String16("cpctest"));
+
+    // auto remoteBinder = sm->waitForService(String16("cpctest"));
+
     if (!remoteBinder) {
         ALOGI("remoteBinder get nullptr error");
         return 0;
