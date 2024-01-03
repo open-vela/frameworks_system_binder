@@ -74,6 +74,11 @@ PROGNAME += PromiseClient
 MAINSRC  += PromiseServer.cpp
 PROGNAME += PromiseServer
 
+MAINSRC  += PromiseClientCpc.cpp
+PROGNAME += PromiseClientCpc
+MAINSRC  += PromiseServerCpc.cpp
+PROGNAME += PromiseServerCpc
+
 MAINSRC  += TestClientCpc.cpp
 PROGNAME += TestClientCpc
 MAINSRC  += TestServerCpc.cpp
