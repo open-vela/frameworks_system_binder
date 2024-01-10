@@ -2,6 +2,8 @@ Kconfig
 cmds/Kconfig
 examples/Kconfig
 performance/Kconfig
+.built
+.depend
 .kconfig
 *.o
 Make.dep
