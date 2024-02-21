@@ -115,8 +115,7 @@ sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
     }
 
     if (cpuname == mLocalCpuName) {
-        sp<IBinder> binder;
-        mTheRealServiceManager->getService(servname, &binder);
+        sp<IBinder> binder = defaultServiceManager()->getService(name);
         return binder;
     }
 
@@ -136,6 +135,8 @@ status_t CpcServiceManagerShim::addService(const String16& name, const sp<IBinde
         ret != android::OK) {
         return ret;
     }
+
+    defaultServiceManager()->addService(name, binder);
 
     binder::Status status = mTheRealServiceManager->addService(
         mLocalCpuName + "/" + String8(name).c_str(), binder,
