@@ -37,7 +37,11 @@ public:
     binder::Status requestExit()
     {
         ALOGI("requestExit: from thread %d", gettid());
+#ifdef __NuttX__
         ProcessState::self()->requestExit();
+#else
+        exit(0);
+#endif
         return binder::Status::ok();
     }
 };
