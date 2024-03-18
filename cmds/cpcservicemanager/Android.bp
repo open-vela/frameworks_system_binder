@@ -1,0 +1,17 @@
+cc_binary {
+    name: "cpcservicemanager",
+
+    srcs: [
+        "main.cpp",
+        "CpcServiceManager.cpp",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "libbinder",
+        "libcpcbinder",
+        "libcutils",
+        "liblog",
+        "libutils",
+    ],
+}

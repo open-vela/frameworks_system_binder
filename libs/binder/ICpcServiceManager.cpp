@@ -25,7 +25,11 @@
 #include <binder/RpcSession.h>
 #include <utils/Log.h>
 
+#include <inttypes.h>
+#include <sys/socket.h>
+#ifdef AF_RPMSG
 #include <netpacket/rpmsg.h>
+#endif
 #include <openssl/sha.h>
 
 namespace android {
@@ -109,7 +113,7 @@ sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
 {
     std::string cpuname;
     std::string servname = String8(name).c_str();
-    auto sep = servname.find("/");
+    auto sep = servname.find('/');
 
     if (sep != std::string::npos) {
         cpuname = servname.substr(0, sep);
@@ -121,7 +125,7 @@ sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
 
         bool found = false;
         for (const auto& i : list) {
-            sep = i.find("/");
+            sep = i.find('/');
             if (servname != i.substr(sep + 1))
                 continue;
             cpuname = i.substr(0, sep);
@@ -188,7 +192,7 @@ sp<IBinder> CpcServiceManagerShim::waitForService(const String16& name16)
     class Waiter : public LocalRegistrationCallback {
         void onServiceRegistration(const String16& instance, const sp<IBinder>& binder)
         {
-            ALOGD("Waiter::onServiceRegistration: %s", String8(instance).c_str());
+            ALOGD("Waiter::onServiceRegistration: %s %p", String8(instance).c_str(), binder.get());
             std::unique_lock lock(mMutex);
             mReady = true;
             mCv.notify_one();
@@ -219,22 +223,26 @@ sp<IBinder> CpcServiceManagerShim::waitForService(const String16& name16)
 
 bool CpcServiceManagerShim::isDeclared(const String16& name)
 {
+    (void)name;
     return false;
 }
 
 Vector<String16> CpcServiceManagerShim::getDeclaredInstances(const String16& interface)
 {
+    (void)interface;
     return {};
 }
 
 std::optional<String16> CpcServiceManagerShim::updatableViaApex(const String16& name)
 {
+    (void)name;
     return std::nullopt;
 }
 
 std::optional<IServiceManager::ConnectionInfo> CpcServiceManagerShim::getConnectionInfo(
     const String16& name)
 {
+    (void)name;
     return std::nullopt;
 }
 
@@ -286,6 +294,7 @@ std::vector<IServiceManager::ServiceDebugInfo> CpcServiceManagerShim::getService
 
 sp<IServiceManager> defaultCpcServiceManager()
 {
+#ifdef AF_RPMSG
     sp<IServiceManager> sm(defaultServiceManager());
     sp<IBinder> binder = sm->checkService(String16("cpcmanager"));
 
@@ -299,7 +308,7 @@ sp<IServiceManager> defaultCpcServiceManager()
     }
 
     // read cpuname from kernel
-    int fd = socket(AF_RPMSG, SOCK_STREAM, 0);
+    int fd = socket(AF_RPMSG, SOCK_STREAM | SOCK_CLOEXEC, 0);
     sockaddr_storage addr;
     socklen_t addrLen = sizeof(addr);
     getsockname(fd, reinterpret_cast<sockaddr*>(&addr), &addrLen);
@@ -307,6 +316,9 @@ sp<IServiceManager> defaultCpcServiceManager()
     close(fd);
 
     return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), cpuname);
+#else
+    return nullptr;
+#endif
 }
 
 } // namespace android
