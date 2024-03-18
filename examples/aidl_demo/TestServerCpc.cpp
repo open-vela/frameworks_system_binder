@@ -18,6 +18,8 @@
 
 #include "BnTestStuff.h"
 
+#include <cinttypes>
+
 #include <binder/ICpcServiceManager.h>
 #include <binder/IPCThreadState.h>
 #include <utils/Log.h>

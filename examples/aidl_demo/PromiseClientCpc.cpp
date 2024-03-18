@@ -21,6 +21,7 @@
 
 #include <utils/Log.h>
 
+#include <cinttypes>
 #include <future>
 
 using namespace android;
