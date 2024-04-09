@@ -1,0 +1,9 @@
+// Copyright (C) 2024 Xiaomi Corporation
+
+java_library {
+    name: "CpcServiceManager",
+    srcs: ["./*.java"],
+
+    required: ["libcpcbinder"],
+}
+
