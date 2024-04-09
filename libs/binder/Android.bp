@@ -20,6 +20,7 @@ cc_library {
 
     srcs: [
         "ICpcServiceManager.cpp",
+        "CpcServiceManager.cpp",
     ],
 
     cflags: [
@@ -31,6 +32,14 @@ cc_library {
         "libcutils",
         "libutils",
         "libbinder",
+        "libandroid",
+        "libandroid_runtime_lazy",
+        "libnativehelper",
+    ],
+
+    include_dirs: [
+        "frameworks/native/libs/binder/include",
+        "frameworks/base/core/jni",
     ],
 
     static_libs: [
