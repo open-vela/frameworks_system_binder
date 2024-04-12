@@ -35,6 +35,7 @@ cc_library {
         "libandroid",
         "libandroid_runtime_lazy",
         "libnativehelper",
+        "libcrypto",
     ],
 
     include_dirs: [
