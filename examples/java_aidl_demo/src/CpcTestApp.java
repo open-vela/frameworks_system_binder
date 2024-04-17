@@ -26,8 +26,6 @@ import android.os.ServiceManagerNative;
 import android.os.IServiceManager;
 import android.os.IServiceCallback;
 import android.os.IClientCallback;
-import android.os.ConnectionInfo;
-import android.os.ServiceDebugInfo;
 import android.os.CpcServiceManager;
 
 import src.IJavaTestStuff;

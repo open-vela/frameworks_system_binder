@@ -15,7 +15,6 @@ java_binary {
 aidl_interface {
     name: "cpctest_aidl_stub",
     unstable: true,
-    flags: ["--rpc"],
     srcs: [":cpctest_aidl"],
     backend: {
         java: {
