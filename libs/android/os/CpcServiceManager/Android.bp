@@ -1,9 +1,40 @@
 // Copyright (C) 2024 Xiaomi Corporation
 
+bootstrap_go_package {
+    name: "soong-CpcServiceManager",
+    pkgPath: "android/soong/CpcServiceManager",
+    deps: [
+        "soong-android",
+        "soong-java",
+    ],
+    srcs: [
+          "CpcServiceManager.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+cpc_service_manager_defaults {
+    name: "cpc_service_manager_defaults",
+}
+
 java_library {
     name: "CpcServiceManager",
-    srcs: ["./*.java"],
+
+    defaults: ["cpc_service_manager_defaults"],
 
     required: ["libcpcbinder"],
 }
 
+filegroup {
+    name: "CpcServiceManagerAndroid",
+    srcs: [
+        "CpcServiceManager.java",
+    ],
+}
+
+filegroup {
+    name: "CpcServiceManagerAndroid11",
+    srcs: [
+        "android11/CpcServiceManager.java",
+    ],
+}
