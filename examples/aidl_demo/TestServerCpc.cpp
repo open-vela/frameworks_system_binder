@@ -49,6 +49,13 @@ extern "C" int main(int argc, char** argv)
     sp<ITestServer> testServer = new ITestServer;
 
     sp<IServiceManager> sm(defaultCpcServiceManager());
+
+    auto remoteBinder = sm->getService(String16("cpctest"));
+    if (remoteBinder != NULL) {
+        ALOGE("Service cpctest has been already added!\n");
+        return 0;
+    }
+
     sm->addService(String16("cpctest"), testServer);
 
     IPCThreadState::self()->joinThreadPool();

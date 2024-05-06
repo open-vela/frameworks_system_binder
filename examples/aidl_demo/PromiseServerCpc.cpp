@@ -53,6 +53,13 @@ extern "C" int main(int argc, char** argv)
     sp<TestServer> testserver = sp<TestServer>::make();
 
     sp<IServiceManager> sm(defaultCpcServiceManager());
+
+    sp<IBinder> binder = sm->getService(String16("promise.srv"));
+    if (binder != NULL) {
+        ALOGE("Service promise.srv has already been added!");
+        return 0;
+    }
+
     sm->addService(String16("promise.srv"), testserver);
 
     IPCThreadState::self()->joinThreadPool();
