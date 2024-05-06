@@ -19,6 +19,7 @@
 #include "ITestStuff.h"
 
 #include <binder/ICpcServiceManager.h>
+#include <binder/ProcessState.h>
 #include <utils/Log.h>
 
 using namespace android;
@@ -28,10 +29,16 @@ extern "C" int main(int argc, char** argv)
 {
     sp<IServiceManager> sm(defaultCpcServiceManager());
 
-    auto remoteBinder = sm->getService(String16("cpctest"));
+    sp<IBinder> remoteBinder;
 
-    // auto remoteBinder = sm->waitForService(String16("cpctest"));
+    if (argc == 2 && !strcmp(argv[1], "wait")) {
+        ProcessState::self()->startThreadPool();
+        remoteBinder = sm->waitForService(String16("cpctest"));
+    } else {
+        remoteBinder = sm->getService(String16("cpctest"));
+    }
 
+    // auto
     if (!remoteBinder) {
         ALOGI("remoteBinder get nullptr error");
         return 0;
