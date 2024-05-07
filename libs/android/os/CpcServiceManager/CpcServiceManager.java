@@ -40,7 +40,7 @@ public class CpcServiceManager implements IServiceManager {
     private static native IBinder nativeGetCpcServiceManagerBinder();
 
     static {
-        System.loadLibrary("cpcbinder");
+        System.loadLibrary("cpcbinder_jni");
     }
 
     public CpcServiceManager() {

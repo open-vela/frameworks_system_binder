@@ -16,15 +16,10 @@ cc_library_headers {
 }
 
 cc_library {
-    name: "libcpcbinder",
+    name: "libcpcbinder_jni",
 
     srcs: [
-        "ICpcServiceManager.cpp",
         "CpcServiceManager.cpp",
-    ],
-
-    cflags: [
-        "-DCONFIG_CPC_SERVICEMANAGER_CPUNAME=\"proxy\"",
     ],
 
     shared_libs: [
@@ -41,6 +36,38 @@ cc_library {
     include_dirs: [
         "frameworks/native/libs/binder/include",
         "frameworks/base/core/jni",
+    ],
+
+    static_libs: [
+        "libbase",
+        "libcpcbinder",
+    ],
+
+    header_libs: [
+        "libcpcbinder_headers",
+    ],
+    export_header_lib_headers: [
+        "libcpcbinder_headers",
+    ],
+}
+
+cc_library_static {
+    name: "libcpcbinder",
+
+    srcs: [
+        "ICpcServiceManager.cpp",
+    ],
+
+    cflags: [
+        "-DCONFIG_CPC_SERVICEMANAGER_CPUNAME=\"proxy\"",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libutils",
+        "libbinder",
+        "libcrypto",
     ],
 
     static_libs: [

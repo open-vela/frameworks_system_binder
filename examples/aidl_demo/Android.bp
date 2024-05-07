@@ -5,6 +5,10 @@ cc_defaults {
         "liblog",
         "libutils",
         "libbinder",
+        "libcrypto",
+    ],
+
+    static_libs: [
         "libcpcbinder",
     ],
 
