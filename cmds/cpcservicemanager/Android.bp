@@ -9,9 +9,13 @@ cc_binary {
     shared_libs: [
         "libbase",
         "libbinder",
-        "libcpcbinder",
         "libcutils",
         "liblog",
         "libutils",
+        "libcrypto",
+    ],
+
+    static_libs: [
+        "libcpcbinder",
     ],
 }
