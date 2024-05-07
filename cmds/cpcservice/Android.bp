@@ -4,9 +4,14 @@ cc_binary {
     srcs: ["cpcservice.cpp"],
 
     shared_libs: [
+        "liblog",
         "libcutils",
         "libutils",
         "libbinder",
+        "libcrypto",
+    ],
+
+    static_libs: [
         "libcpcbinder",
     ],
 }
