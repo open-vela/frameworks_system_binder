@@ -1,3 +1,18 @@
+// Copyright (C) 2024 Xiaomi Corporation
+
+bootstrap_go_package {
+    name: "soong-ICpcServiceManager",
+    pkgPath: "android/soong/ICpcServiceManager",
+    deps: [
+        "soong-android",
+        "soong-cc",
+    ],
+    srcs: [
+          "ICpcServiceManager.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
 cc_library_headers {
     name: "libcpcbinder_headers",
     export_include_dirs: ["include"],
@@ -51,15 +66,31 @@ cc_library {
     ],
 }
 
-cc_library_static {
-    name: "libcpcbinder",
+ICpcServiceManager_defaults {
+    name: "ICpcServiceManager_defaults",
+}
 
+filegroup {
+    name: "ICpcServiceManagerAndroid",
     srcs: [
         "ICpcServiceManager.cpp",
     ],
+}
+
+filegroup {
+    name: "ICpcServiceManagerAndroid13",
+    srcs: [
+        "android13/ICpcServiceManager.cpp",
+    ],
+}
+
+cc_library_static {
+    name: "libcpcbinder",
+
+    defaults: ["ICpcServiceManager_defaults"],
 
     cflags: [
-        "-DCONFIG_CPC_SERVICEMANAGER_CPUNAME=\"proxy\"",
+        "-DCONFIG_CPC_SERVICEMANAGER_CPUNAME=\"ap\"",
     ],
 
     shared_libs: [

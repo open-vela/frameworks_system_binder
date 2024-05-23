@@ -38,3 +38,10 @@ filegroup {
         "android11/CpcServiceManager.java",
     ],
 }
+
+filegroup {
+    name: "CpcServiceManagerAndroid13",
+    srcs: [
+        "android13/CpcServiceManager.java",
+    ],
+}
