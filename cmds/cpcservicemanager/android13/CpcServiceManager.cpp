@@ -143,12 +143,6 @@ Status CpcServiceManager::updatableViaApex(const std::string& name,
     return Status::fromExceptionCode(Status::EX_UNSUPPORTED_OPERATION);
 }
 
-Status CpcServiceManager::getUpdatableNames([[maybe_unused]] const std::string& apexName,
-    std::vector<std::string>* outReturn)
-{
-    return Status::fromExceptionCode(Status::EX_UNSUPPORTED_OPERATION);
-}
-
 Status CpcServiceManager::getConnectionInfo(const std::string& name,
     std::optional<ConnectionInfo>* outReturn)
 {

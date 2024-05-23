@@ -22,7 +22,9 @@ MODULE    = $(CONFIG_CPC_SERVICEMANAGER)
 PRIORITY  = SCHED_PRIORITY_DEFAULT
 STACKSIZE = $(CONFIG_CPC_SERVICEMANAGER_STACKSIZE)
 
-CXXSRCS  += CpcServiceManager.cpp
+CXXFLAGS += -I ./android13 $(CXXFLAGS)
+
+CXXSRCS  += android13/CpcServiceManager.cpp
 MAINSRC  += main.cpp
 PROGNAME += cpcservicemanager
 
