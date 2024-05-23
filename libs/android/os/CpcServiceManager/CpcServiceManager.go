@@ -28,6 +28,8 @@ func cpcServiceManagerHook(ctx android.LoadHookContext) {
 
     if (Version == "11") {
         p.Srcs = append(p.Srcs, ":CpcServiceManagerAndroid11")
+    } else if (Version == "13") {
+        p.Srcs = append(p.Srcs, ":CpcServiceManagerAndroid13")
     } else {
         p.Srcs = append(p.Srcs, ":CpcServiceManagerAndroid")
     }

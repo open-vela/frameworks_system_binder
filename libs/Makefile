@@ -18,6 +18,6 @@ include $(APPDIR)/Make.defs
 
 CXXEXT = .cpp
 
-CXXSRCS += binder/ICpcServiceManager.cpp
+CXXSRCS += binder/android13/ICpcServiceManager.cpp
 
 include $(APPDIR)/Application.mk

@@ -48,7 +48,6 @@ public:
     bool isDeclared(const String16& name) override;
     Vector<String16> getDeclaredInstances(const String16& interface) override;
     std::optional<String16> updatableViaApex(const String16& name) override;
-    Vector<String16> getUpdatableNames(const String16& apexName) override;
     std::optional<IServiceManager::ConnectionInfo> getConnectionInfo(const String16& name) override;
     status_t registerForNotifications(const String16& service,
         const sp<LocalRegistrationCallback>& cb) override;
@@ -238,12 +237,6 @@ std::optional<String16> CpcServiceManagerShim::updatableViaApex(const String16& 
 {
     (void)name;
     return std::nullopt;
-}
-
-Vector<String16> CpcServiceManagerShim::getUpdatableNames(const String16& apexName)
-{
-    (void)apexName;
-    return {};
 }
 
 std::optional<IServiceManager::ConnectionInfo> CpcServiceManagerShim::getConnectionInfo(

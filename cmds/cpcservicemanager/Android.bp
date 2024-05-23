@@ -1,10 +1,42 @@
-cc_binary {
-    name: "cpcservicemanager",
+// Copyright (C) 2024 Xiaomi Corporation
 
+bootstrap_go_package {
+    name: "soong-CpcServiceManagerNative",
+    pkgPath: "android/soong/CpcServiceManagerNative",
+    deps: [
+        "soong-android",
+        "soong-cc",
+    ],
+    srcs: [
+          "CpcServiceManagerNative.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+CpcServiceManagerNative_defaults {
+    name: "CpcServiceManagerNative_defaults",
+}
+
+filegroup {
+    name: "CpcServiceManagerNativeAndroid",
     srcs: [
         "main.cpp",
         "CpcServiceManager.cpp",
     ],
+}
+
+filegroup {
+    name: "ICpcServiceManagerNativeAndroid13",
+    srcs: [
+        "main.cpp",
+        "android13/CpcServiceManager.cpp",
+    ],
+}
+
+cc_binary {
+    name: "cpcservicemanager",
+
+    defaults: ["CpcServiceManagerNative_defaults"],
 
     shared_libs: [
         "libbase",

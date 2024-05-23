@@ -20,7 +20,7 @@
 #include <binder/ProcessState.h>
 #include <binder/RpcServer.h>
 
-#include "CpcServiceManager.h"
+#include <CpcServiceManager.h>
 
 using android::CpcServiceManager;
 using android::defaultServiceManager;
