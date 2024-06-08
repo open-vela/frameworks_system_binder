@@ -8,7 +8,6 @@ cc_binary {
         "libcutils",
         "libutils",
         "libbinder",
-        "libcrypto",
     ],
 
     static_libs: [

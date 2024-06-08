@@ -45,7 +45,6 @@ cc_library {
         "libandroid",
         "libandroid_runtime_lazy",
         "libnativehelper",
-        "libcrypto",
     ],
 
     include_dirs: [
@@ -98,7 +97,6 @@ cc_library_static {
         "libcutils",
         "libutils",
         "libbinder",
-        "libcrypto",
     ],
 
     static_libs: [
