@@ -30,7 +30,6 @@
 #ifdef AF_RPMSG
 #include <netpacket/rpmsg.h>
 #endif
-#include <openssl/sha.h>
 
 namespace android {
 
@@ -93,23 +92,6 @@ CpcServiceManagerShim::CpcServiceManagerShim(const sp<os::IServiceManager>& impl
 {
 }
 
-static std::string sha1(const std::string& in)
-{
-    SHA_CTX ctx;
-    SHA1_Init(&ctx);
-    SHA1_Update(&ctx, (u_char*)(in.c_str()), in.size());
-    u_char digest[SHA_DIGEST_LENGTH];
-    SHA1_Final(digest, &ctx);
-
-    std::size_t limit = std::min((std::size_t)SHA_DIGEST_LENGTH, sizeof(sockaddr_rpmsg::rp_name) / 2 - 1);
-
-    std::string out;
-    for (std::size_t i = 0; i < limit; i++) {
-        out += base::StringPrintf("%02x", digest[i]);
-    }
-    return out;
-}
-
 sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
 {
     std::string cpuname;
@@ -145,7 +127,7 @@ sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
 
     auto session = RpcSession::make();
     session->setMaxIncomingThreads(1);
-    auto status = session->setupRpmsgSockClient(cpuname.c_str(), sha1(servname).c_str());
+    auto status = session->setupRpmsgSockClient(cpuname.c_str(), servname.c_str());
     if (status != OK)
         return nullptr;
 
@@ -156,7 +138,7 @@ status_t CpcServiceManagerShim::addService(const String16& name, const sp<IBinde
     bool allowIsolated, int dumpsysPriority)
 {
     std::string servname = String8(name).c_str();
-    if (status_t ret = ProcessState::self()->registerRemoteService(sha1(servname).c_str(), binder);
+    if (status_t ret = ProcessState::self()->registerRemoteService(servname.c_str(), binder);
         ret != android::OK) {
         return ret;
     }
