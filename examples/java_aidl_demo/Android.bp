@@ -7,7 +7,7 @@ java_binary {
            ":cpctest_aidl"
     ],
 
-    static_libs: ["CpcServiceManager"],
+    libs : ["cpc-service-manager"],
 
     platform_apis: true,
 }

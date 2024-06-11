@@ -13,3 +13,5 @@ examples/aidl_demo/Bp*
 examples/aidl_demo/IT*
 examples/aidl_demo/IN*
 examples/aidl_demo/aidl/
+.idea/
+*.iml

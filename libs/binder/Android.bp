@@ -15,6 +15,7 @@ bootstrap_go_package {
 
 cc_library_headers {
     name: "libcpcbinder_headers",
+    vendor_available: true,
     export_include_dirs: ["include"],
     header_libs: [
         "libbase_headers",
@@ -85,6 +86,8 @@ filegroup {
 
 cc_library_static {
     name: "libcpcbinder",
+
+    vendor_available: true,
 
     defaults: ["ICpcServiceManager_defaults"],
 

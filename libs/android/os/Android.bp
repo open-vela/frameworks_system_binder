@@ -1,0 +1,14 @@
+// Copyright (C) 2024 Xiaomi Corporation
+java_sdk_library {
+    name: "cpc-service-manager",
+    srcs : ["CpcServiceManager.java"],
+    api_packages: ["android.os"],
+    public: {
+        enabled: true,
+    },
+    system: {
+        enabled: true,
+    },
+    required: ["libcpcbinder_jni"],
+    unsafe_ignore_missing_latest_api: true,
+ }
