@@ -47,16 +47,6 @@ public class CpcTestApp {
         }
     };
 
-
-    private static IServiceManager getCpcServiceManager() {
-        if (sCpcServiceManager != null) {
-            return sCpcServiceManager;
-        }
-
-        sCpcServiceManager = new CpcServiceManager();
-        return sCpcServiceManager;
-    }
-
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("[usage]: cpctest server or cpctest client\n");
@@ -68,37 +58,25 @@ public class CpcTestApp {
 
         if (args[0].equals("server")) {
             System.out.println("CPC Server Test\n");
-            IServiceManager sm = getCpcServiceManager();
+            CpcServiceManager.addService("asvc_cpctest", mBinder);
+            Binder.joinThreadPool();
+        } else if (args[0].equals("client")) {
+            System.out.println("CPC Client Test\n");
+            IBinder binder = CpcServiceManager.getService("vsac_cpctest");
+            if (binder == null) {
+                System.out.println("Get binder failed!\n");
+                return;
+            }
+
+            IJavaTestStuff testStuff= IJavaTestStuff.Stub.asInterface(binder);
             try {
-                sm.addService("asvc_cpctest", mBinder, false,
-                               IServiceManager.DUMP_FLAG_PRIORITY_DEFAULT);
+                testStuff.write(123);
             } catch (RemoteException re) {
                 re.printStackTrace();
             }
 
-            Binder.joinThreadPool();
-        } else if (args[0].equals("client")) {
-            System.out.println("CPC Client Test\n");
-            IServiceManager sm = getCpcServiceManager();
             try {
-                IBinder binder = sm.getService("vsac_cpctest");
-                if (binder == null) {
-                    System.out.println("Get binder failed!\n");
-                    return;
-                }
-
-                IJavaTestStuff testStuff= IJavaTestStuff.Stub.asInterface(binder);
-                try {
-                    testStuff.write(123);
-                } catch (RemoteException re) {
-                    re.printStackTrace();
-                }
-
-                try {
-                    testStuff.read(456);
-                } catch (RemoteException re) {
-                    re.printStackTrace();
-                }
+                testStuff.read(456);
             } catch (RemoteException re) {
                 re.printStackTrace();
             }
