@@ -1,4 +1,4 @@
 #!/system/bin/sh
 export LD_PRELOAD=libcpcbinder_jni.so
-export CLASSPATH=/data/local/tmp/cpctest.jar
+export CLASSPATH=/data/local/tmp/cpctest.jar:/data/local/tmp/cpc-service-manager.jar
 exec app_process /system/bin src.CpcTestApp "$@"
