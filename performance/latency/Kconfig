@@ -35,3 +35,8 @@ config BINDER_PERFORMANCE_LATENCY_PIPE
 	default n
 	depends on BINDER_PERFORMANCE_LATENCY
 	depends on PIPES
+
+config BINDER_PERFORMANCE_LATENCY_SENDVEC
+	bool "SendVec"
+	default n
+	depends on BINDER_PERFORMANCE_LATENCY
