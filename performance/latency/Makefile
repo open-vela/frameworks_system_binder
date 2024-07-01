@@ -34,4 +34,20 @@ MAINSRC  += latency_pipe.cpp
 PROGNAME += latency_pipe
 endif
 
+ifneq ($(CONFIG_BINDER_PERFORMANCE_LATENCY_SENDVEC),)
+AIDLFLAGS = --lang=cpp -h. -o.
+AIDLFLAGS += -I.
+
+AIDLSRCS += IBinderLatency.aidl
+
+CXXFLAGS += -I.
+
+CXXSRCS += IBinderLatency.cpp
+
+MAINSRC  += latency_sendvec_server.cpp
+PROGNAME += latency_sendvec_server
+MAINSRC += latency_sendvec_client.cpp
+PROGNAME += latency_sendvec_client
+endif
+
 include $(APPDIR)/Application.mk
