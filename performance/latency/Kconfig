@@ -40,3 +40,8 @@ config BINDER_PERFORMANCE_LATENCY_SENDVEC
 	bool "SendVec"
 	default n
 	depends on BINDER_PERFORMANCE_LATENCY
+
+config BINDER_PERFORMANCE_LATENCY_RPMSG_SOCKET
+	bool "Rpmsg Socket"
+	default n
+	depends on BINDER_PERFORMANCE_LATENCY
