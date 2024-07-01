@@ -34,6 +34,13 @@ MAINSRC  += latency_pipe.cpp
 PROGNAME += latency_pipe
 endif
 
+ifneq ($(CONFIG_BINDER_PERFORMANCE_LATENCY_RPMSG_SOCKET),)
+MAINSRC  += latency_rpmsg_server.cpp
+PROGNAME += latency_rpmsg_server
+MAINSRC  += latency_rpmsg_socket.cpp
+PROGNAME += latency_rpmsg_socket
+endif
+
 ifneq ($(CONFIG_BINDER_PERFORMANCE_LATENCY_SENDVEC),)
 AIDLFLAGS = --lang=cpp -h. -o.
 AIDLFLAGS += -I.
