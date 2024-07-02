@@ -236,6 +236,6 @@ public class CpcServiceManager {
     private static native boolean nativeCpcIsDeclared(String name);
 
     static {
-        System.loadLibrary("cpcbinder_jni");
+        System.loadLibrary("cpcbinder_jni.xiaomi");
     }
 }
