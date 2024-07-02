@@ -9,6 +9,6 @@ java_sdk_library {
     system: {
         enabled: true,
     },
-    required: ["libcpcbinder_jni"],
+    required: ["libcpcbinder_jni.xiaomi"],
     unsafe_ignore_missing_latest_api: true,
  }
