@@ -32,6 +32,11 @@ static jobject nativeCpcGetService(JNIEnv* env, jobject /* clazz */, jstring jNa
     ScopedUtfChars utfName(env, jName);
     std::string name(utfName.c_str());
     sp<IServiceManager> sm(defaultCpcServiceManager());
+
+    if (sm == nullptr) {
+        return nullptr;
+    }
+
     sp<IBinder> binder = sm->getService(String16(name.c_str()));
 
     return javaObjectForIBinder(env, binder);
@@ -42,6 +47,11 @@ static jobject nativeCpcCheckService(JNIEnv* env, jobject /* clazz */, jstring j
     ScopedUtfChars utfName(env, jName);
     std::string name(utfName.c_str());
     sp<IServiceManager> sm(defaultCpcServiceManager());
+
+    if (sm == nullptr) {
+        return nullptr;
+    }
+
     sp<IBinder> binder = sm->checkService(String16(name.c_str()));
 
     return javaObjectForIBinder(env, binder);
@@ -54,6 +64,11 @@ static void nativeCpcAddService(JNIEnv* env, jobject /* clazz */, jstring jName,
     ScopedUtfChars utfName(env, jName);
     std::string name(utfName.c_str());
     sp<IServiceManager> sm(defaultCpcServiceManager());
+
+    if (sm == nullptr) {
+        return;
+    }
+
     sm->addService(String16(name.c_str()), cpcServiceBinder, allowIsolated, dumpPriority);
 }
 
@@ -63,12 +78,20 @@ static jboolean nativeCpcIsDeclared(JNIEnv* env, jobject /* clazz */, jstring jN
     std::string name(utfName.c_str());
     sp<IServiceManager> sm(defaultCpcServiceManager());
 
+    if (sm == nullptr) {
+        return false;
+    }
+
     return sm->isDeclared(String16(name.c_str()));
 }
 
 static jobject nativeGetCpcServiceManagerBinder(JNIEnv* env, jobject /* clazz */)
 {
     sp<IBinder> binder = IInterface::asBinder(defaultCpcServiceManager());
+
+    if (binder == nullptr) {
+        return nullptr;
+    }
 
     return javaObjectForIBinder(env, binder);
 }
