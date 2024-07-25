@@ -65,8 +65,25 @@ cc_library {
     ],
 }
 
+cc_library_headers {
+    name: "libfsq_headers",
+    vendor_available: true,
+    export_include_dirs: ["include"],
+}
+
+filegroup {
+    name: "SocketDescriptor",
+    srcs: [
+        "include/binder/SocketDescriptor.aidl"
+    ],
+    path: "include",
+}
+
 ICpcServiceManager_defaults {
     name: "ICpcServiceManager_defaults",
+    srcs: [
+        ":SocketDescriptor",
+    ],
 }
 
 filegroup {
@@ -94,6 +111,10 @@ cc_library_static {
         "-DCONFIG_CPC_SERVICEMANAGER_CPUNAME=\"ap\"",
     ],
 
+    aidl: {
+        export_aidl_headers: true,
+    },
+
     shared_libs: [
         "liblog",
         "libcutils",
@@ -107,8 +128,10 @@ cc_library_static {
 
     header_libs: [
         "libcpcbinder_headers",
+        "libfsq_headers",
     ],
     export_header_lib_headers: [
         "libcpcbinder_headers",
+        "libfsq_headers",
     ],
 }

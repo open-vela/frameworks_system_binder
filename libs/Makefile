@@ -20,4 +20,10 @@ CXXEXT = .cpp
 
 CXXSRCS += binder/android13/ICpcServiceManager.cpp
 
+AIDLFLAGS += --lang=cpp -h binder/include -o binder/include
+AIDLSRCS += binder/include/binder/SocketDescriptor.aidl
+
+CXXSRCS += binder/include/binder/SocketDescriptor.cpp
+CXXFLAGS += -Wno-return-type
+
 include $(APPDIR)/Application.mk
