@@ -1,0 +1,52 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+cc_defaults {
+    name: "binder_socket_queue_defaults",
+    shared_libs: [
+        "libcutils",
+        "liblog",
+        "libutils",
+        "libbinder",
+    ],
+
+    static_libs: [
+        "libcpcbinder",
+    ],
+}
+
+cc_binary {
+    name: "TestSocketQueueServer",
+
+    aidl: {
+        include_dirs: [
+            "vendor/vela/frameworks/binder/libs/binder/include",
+        ],
+    },
+
+    srcs: [
+        "ITestAidlSocketQ.aidl",
+        "TestSocketQueueServer.cpp"
+    ],
+    header_libs: ["libfsq_headers"],
+    defaults: ["binder_socket_queue_defaults"],
+}
+
+cc_binary {
+    name: "TestSocketQueueClient",
+
+    aidl: {
+        include_dirs: [
+            "vendor/vela/frameworks/binder/libs/binder/include",
+        ],
+    },
+
+    srcs: [
+        "ITestAidlSocketQ.aidl",
+        "TestSocketQueueClient.cpp"
+    ],
+    header_libs: ["libfsq_headers"],
+    defaults: ["binder_socket_queue_defaults"],
+}
+

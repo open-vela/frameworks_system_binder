@@ -21,6 +21,10 @@ examples/java_aidl_demo/src/Bn*
 examples/java_aidl_demo/src/Bp*
 examples/java_aidl_demo/src/IJavaTestStuff.cpp
 examples/java_aidl_demo/src/IJavaTestStuff.h
+examples/cpcfsq/Bn*
+examples/cpcfsq/Bp*
+examples/cpcfsq/ITestAidlSocketQ.cpp
+examples/cpcfsq/ITestAidlSocketQ.h
 
 .idea/
 *.iml
