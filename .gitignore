@@ -13,5 +13,14 @@ examples/aidl_demo/Bp*
 examples/aidl_demo/IT*
 examples/aidl_demo/IN*
 examples/aidl_demo/aidl/
+libs/binder/include/binder/Bn*
+libs/binder/include/binder/Bp*
+libs/binder/include/binder/SocketDescriptor.cpp
+libs/binder/include/binder/SocketDescriptor.h
+examples/java_aidl_demo/src/Bn*
+examples/java_aidl_demo/src/Bp*
+examples/java_aidl_demo/src/IJavaTestStuff.cpp
+examples/java_aidl_demo/src/IJavaTestStuff.h
+
 .idea/
 *.iml

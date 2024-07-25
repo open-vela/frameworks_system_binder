@@ -17,5 +17,6 @@
 ifneq ($(CONFIG_ANDROID_BINDER),)
 CONFIGURED_APPS += $(APPDIR)/frameworks/binder/libs
 
+AIDLFLAGS += ${INCDIR_PREFIX}$(APPDIR)/frameworks/binder/libs/binder/include
 CXXFLAGS += ${INCDIR_PREFIX}$(APPDIR)/frameworks/binder/libs/binder/include
 endif
