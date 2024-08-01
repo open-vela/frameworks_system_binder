@@ -1,0 +1,40 @@
+// Copyright (C) 2024 Xiaomi Corporation
+
+cc_defaults {
+    name: "cpc_fsq_jni_defaults",
+    shared_libs: [
+        "libcutils",
+        "liblog",
+        "libutils",
+        "libbinder",
+    ],
+
+    static_libs: [
+        "libcpcbinder",
+    ],
+}
+
+filegroup {
+    name: "cpcfsq_aidl",
+    srcs: [
+        "ICpcFsqJni.aidl",
+    ],
+}
+
+cc_binary {
+    name: "CpcFsqJniServer",
+
+    aidl: {
+        include_dirs: [
+            "vendor/vela/frameworks/binder/libs/binder/include",
+        ],
+    },
+
+    srcs: [
+           ":cpcfsq_aidl",
+           "CpcFsqJniServer.cpp"
+    ],
+
+    header_libs: ["libfsq_headers"],
+    defaults: ["cpc_fsq_jni_defaults"],
+}
