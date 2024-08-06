@@ -1,9 +1,0 @@
-// Signature format: 2.0
-package android.os {
-
-  public class CpcServiceManager {
-    ctor public CpcServiceManager();
-  }
-
-}
-

@@ -31,40 +31,6 @@ cc_library_headers {
     ],
 }
 
-cc_library {
-    name: "libcpcbinder_jni.xiaomi",
-    srcs: [
-        "CpcServiceManager.cpp",
-    ],
-
-    shared_libs: [
-        "liblog",
-        "libcutils",
-        "libutils",
-        "libbinder",
-        "libandroid",
-        "libandroid_runtime_lazy",
-        "libnativehelper",
-    ],
-
-    include_dirs: [
-        "frameworks/native/libs/binder/include",
-        "frameworks/base/core/jni",
-    ],
-
-    static_libs: [
-        "libbase",
-        "libcpcbinder",
-    ],
-
-    header_libs: [
-        "libcpcbinder_headers",
-    ],
-    export_header_lib_headers: [
-        "libcpcbinder_headers",
-    ],
-}
-
 cc_library_headers {
     name: "libfsq_headers",
     vendor_available: true,
@@ -116,20 +82,18 @@ cc_library_static {
     },
 
     shared_libs: [
+        "libbase",
         "liblog",
         "libcutils",
         "libutils",
         "libbinder",
     ],
 
-    static_libs: [
-        "libbase",
-    ],
-
     header_libs: [
         "libcpcbinder_headers",
         "libfsq_headers",
     ],
+
     export_header_lib_headers: [
         "libcpcbinder_headers",
         "libfsq_headers",
