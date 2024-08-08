@@ -1,4 +1,0 @@
-#!/system/bin/sh
-export LD_PRELOAD=libcpc_extension_jni.so
-export CLASSPATH=/data/local/tmp/cpctest.jar:/system/framework/cpc-extension.jar
-exec app_process /system/bin src.CpcTestApp "$@"
