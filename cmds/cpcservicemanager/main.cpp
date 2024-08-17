@@ -61,6 +61,7 @@ extern "C" int main(int argc, char** argv)
     }
 #endif
 
+    ProcessState::self()->setThreadPoolMaxThreadCount(1);
     IPCThreadState::self()->joinThreadPool();
 
     // should not be reached
