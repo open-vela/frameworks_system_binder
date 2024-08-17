@@ -43,7 +43,8 @@ namespace android {
 
 class CpcServiceManagerShim : public IServiceManager {
 public:
-    CpcServiceManagerShim(const sp<os::IServiceManager>& impl, const char* cpuname);
+    CpcServiceManagerShim(const sp<os::IServiceManager>& impl,
+        const char* cpuname, uv_loop_t* loop = nullptr);
 
     sp<IBinder> getService(const String16& name) const override;
     status_t addService(const String16& name, const sp<IBinder>& service,
@@ -99,11 +100,14 @@ private:
     sp<os::IServiceManager> mTheRealServiceManager;
     std::string mLocalCpuName;
     ServiceCallbackMap mNameToCallback;
+    uv_loop_t* mLoop;
 };
 
-CpcServiceManagerShim::CpcServiceManagerShim(const sp<os::IServiceManager>& impl, const char* cpuname)
+CpcServiceManagerShim::CpcServiceManagerShim(const sp<os::IServiceManager>& impl,
+    const char* cpuname, uv_loop_t* loop)
     : mTheRealServiceManager(impl)
     , mLocalCpuName(cpuname)
+    , mLoop(loop)
 {
 }
 
@@ -198,13 +202,21 @@ status_t CpcServiceManagerShim::addService(const String16& name, const sp<IBinde
     }
 
 #ifdef AF_VSOCK
+#ifdef __ANDROID__
     if (status_t status = ProcessState::self()->registerRemoteService(murmurhash(servname.c_str()), binder);
+#else
+    if (status_t status = ProcessState::self()->registerRemoteService(murmurhash(servname.c_str()), binder, mLoop);
+#endif
         status != android::OK) {
         ALOGI("failed to reigister %s for vsock status=%" PRId32, servname.c_str(), status);
     }
 #endif
 #ifdef AF_RPMSG
+#ifdef __ANDROID__
     if (status_t status = ProcessState::self()->registerRemoteService(servname.c_str(), binder);
+#else
+    if (status_t status = ProcessState::self()->registerRemoteService(servname.c_str(), binder, mLoop);
+#endif
         status != android::OK) {
         ALOGI("failed to register %s for rpmsg status=%" PRId32, servname.c_str(), status);
     }
@@ -356,13 +368,18 @@ std::vector<IServiceManager::ServiceDebugInfo> CpcServiceManagerShim::getService
     return {};
 }
 
-sp<IServiceManager> defaultCpcServiceManager()
+sp<IServiceManager> defaultCpcServiceManager(uv_loop_t* loop)
 {
     sp<IServiceManager> sm(defaultServiceManager());
     sp<IBinder> binder = sm->checkService(String16("cpcmanager"));
 
-    if (binder != nullptr)
+    if (binder != nullptr) {
+#ifdef __ANDROID__
         return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), CONFIG_CPC_SERVICEMANAGER_CPUNAME);
+#else
+        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), CONFIG_CPC_SERVICEMANAGER_CPUNAME, loop);
+#endif
+    }
 
     auto session = RpcSession::make();
     session->setMaxIncomingThreads(1);
@@ -390,7 +407,7 @@ sp<IServiceManager> defaultCpcServiceManager()
         close(fd);
         char cpuname[16] = { 0 };
         memcpy(cpuname, &addr.svm_cid, sizeof(addr.svm_cid));
-        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), cpuname);
+        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), cpuname, loop);
     }
 #endif
 
@@ -414,7 +431,7 @@ sp<IServiceManager> defaultCpcServiceManager()
         connect(fd, sa, len);
         getsockname(fd, sa, &len);
         close(fd);
-        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), addr.rp_cpu);
+        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), addr.rp_cpu, loop);
     }
 #endif
 

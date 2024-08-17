@@ -18,9 +18,17 @@
 
 #include <binder/IServiceManager.h>
 
+#if defined __has_include && __has_include(<uv.h>)
+#include <uv.h>
+#else
+struct uv_loop_t;
+struct uv_poll_t;
+struct uv_handle_t;
+#endif
+
 namespace android {
 
 // Reuse IServiceManager here
-sp<IServiceManager> defaultCpcServiceManager();
+sp<IServiceManager> defaultCpcServiceManager(uv_loop_t* loop = nullptr);
 
 } // namespace android
