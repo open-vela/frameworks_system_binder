@@ -47,9 +47,6 @@ filegroup {
 
 ICpcServiceManager_defaults {
     name: "ICpcServiceManager_defaults",
-    srcs: [
-        ":SocketDescriptor",
-    ],
 }
 
 filegroup {

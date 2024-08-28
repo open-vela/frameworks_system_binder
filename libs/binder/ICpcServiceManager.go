@@ -27,10 +27,13 @@ func ICpcServiceManagerHook(ctx android.LoadHookContext) {
 
     p := &props{}
 
-    if (strings.Compare(Version, "14") < 0) {
-        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid13")
-    } else {
-        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid")
+    if (strings.Compare(Version, "12") > 0) {
+        if (strings.Compare(Version, "14") < 0) {
+            p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid13")
+        } else {
+            p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid")
+        }
+        p.Srcs = append(p.Srcs, ":SocketDescriptor")
     }
 
     ctx.AppendProperties(p)
