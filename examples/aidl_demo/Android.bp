@@ -1,5 +1,20 @@
-cc_defaults {
-    name: "binder_examples_defaults",
+// Copyright (C) 2024 Xiaomi Corporation
+
+bootstrap_go_package {
+    name: "soong-cpcexamples",
+    pkgPath: "android/soong/cpcexamples",
+    deps: [
+        "soong-android",
+        "soong-cc",
+    ],
+    srcs: [
+          "cpcexamples.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+cpcexamples_defaults {
+    name: "cpcexamples_defaults",
     shared_libs: [
         "libcutils",
         "liblog",
@@ -21,23 +36,23 @@ cc_defaults {
 cc_binary {
     name: "TestClientCpc",
     srcs: ["TestClientCpc.cpp"],
-    defaults: ["binder_examples_defaults"],
+    defaults: ["cpcexamples_defaults"],
 }
 
 cc_binary {
     name: "TestServerCpc",
     srcs: ["TestServerCpc.cpp"],
-    defaults: ["binder_examples_defaults"],
+    defaults: ["cpcexamples_defaults"],
 }
 
 cc_binary {
     name: "PromiseClientCpc",
     srcs: ["PromiseClientCpc.cpp"],
-    defaults: ["binder_examples_defaults"],
+    defaults: ["cpcexamples_defaults"],
 }
 
 cc_binary {
     name: "PromiseServerCpc",
     srcs: ["PromiseServerCpc.cpp"],
-    defaults: ["binder_examples_defaults"],
+    defaults: ["cpcexamples_defaults"],
 }

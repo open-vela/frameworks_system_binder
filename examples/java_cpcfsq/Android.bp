@@ -1,7 +1,20 @@
 // Copyright (C) 2024 Xiaomi Corporation
 
-cc_defaults {
-    name: "cpc_fsq_jni_defaults",
+bootstrap_go_package {
+    name: "soong-cpcfsqjniservice",
+    pkgPath: "android/soong/cpcfsqjni",
+    deps: [
+        "soong-android",
+        "soong-cc",
+    ],
+    srcs: [
+          "cpcfsqjni.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+cpcfsqjni_defaults {
+    name: "cpcfsqjni_defaults",
     shared_libs: [
         "libcutils",
         "liblog",
@@ -36,5 +49,5 @@ cc_binary {
     ],
 
     header_libs: ["libfsq_headers"],
-    defaults: ["cpc_fsq_jni_defaults"],
+    defaults: ["cpcfsqjni_defaults"],
 }
