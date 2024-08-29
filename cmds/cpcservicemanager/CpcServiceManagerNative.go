@@ -24,14 +24,22 @@ func CpcServiceManagerNativeHook(ctx android.LoadHookContext) {
 
     type props struct {
         Srcs []string
+        Enabled *bool
     }
 
     p := &props{}
 
-    if (strings.Compare(Version, "14") < 0) {
-        p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid13")
+    var enabled bool = true
+
+    if (strings.Compare(Version, "12") != 0) {
+        if (strings.Compare(Version, "14") < 0) {
+            p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid13")
+        } else {
+            p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid")
+        }
     } else {
-        p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid")
+        enabled = false
+        p.Enabled = &enabled
     }
 
     ctx.AppendProperties(p)
