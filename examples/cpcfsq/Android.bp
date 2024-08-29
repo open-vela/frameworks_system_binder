@@ -2,8 +2,21 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-cc_defaults {
-    name: "binder_socket_queue_defaults",
+bootstrap_go_package {
+    name: "soong-cpcfsqnative",
+    pkgPath: "android/soong/cpcfsqnative",
+    deps: [
+        "soong-android",
+        "soong-cc",
+    ],
+    srcs: [
+          "cpcfsqnative.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+cpcfsqnative_defaults {
+    name: "cpcfsqnative_defaults",
     shared_libs: [
         "libcutils",
         "liblog",
@@ -30,7 +43,7 @@ cc_binary {
         "TestSocketQueueServer.cpp"
     ],
     header_libs: ["libfsq_headers"],
-    defaults: ["binder_socket_queue_defaults"],
+    defaults: ["cpcfsqnative_defaults"],
 }
 
 cc_binary {
@@ -47,6 +60,6 @@ cc_binary {
         "TestSocketQueueClient.cpp"
     ],
     header_libs: ["libfsq_headers"],
-    defaults: ["binder_socket_queue_defaults"],
+    defaults: ["cpcfsqnative_defaults"],
 }
 
