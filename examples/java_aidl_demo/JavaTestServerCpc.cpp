@@ -26,7 +26,7 @@ using namespace android;
 using android::binder::Status;
 
 namespace android {
-class ITestServer : public src::BnJavaTestStuff {
+class IJavaTestServer : public src::BnJavaTestStuff {
 public:
     Status read(int32_t sample)
     {
@@ -44,7 +44,7 @@ public:
 extern "C" int main(int argc, char** argv)
 {
     ALOGI("sample service start count: %d, argv[0]: %s", argc, argv[0]);
-    sp<ITestServer> testServer = new ITestServer;
+    sp<IJavaTestServer> testServer = new IJavaTestServer;
 
     sp<IServiceManager> sm(defaultCpcServiceManager());
     sm->addService(String16("vsac_cpctest"), testServer);
