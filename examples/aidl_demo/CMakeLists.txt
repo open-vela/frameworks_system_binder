@@ -82,6 +82,7 @@ if(CONFIG_BINDER_EXAMPLES)
   add_binder_example_app(TestServerEpoll TestServerEpoll.cpp)
   if(CONFIG_LIBUV)
     add_binder_example_app(TestServerLibuv TestServerLibuv.cpp)
+    add_binder_example_app(TestServerCpcLibuv TestServerCpcLibuv.cpp)
   endif()
 
   add_binder_example_app(NdkTestVectorSrv NdkTestVectorSrv.cpp)
