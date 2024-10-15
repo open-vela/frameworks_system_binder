@@ -87,4 +87,9 @@ PROGNAME += TestServerCpc
 MAINSRC  += TestServerDumpsys.cpp
 PROGNAME += TestServerDumpsys
 
+ifdef CONFIG_LIBUV
+MAINSRC  += TestServerCpcLibuv.cpp
+PROGNAME += TestServerCpcLibuv
+endif
+
 include $(APPDIR)/Application.mk
