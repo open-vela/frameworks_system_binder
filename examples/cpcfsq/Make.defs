@@ -15,5 +15,5 @@
 #
 
 ifneq ($(CONFIG_CPCFSQ_EXAMPLES),)
-CONFIGURED_APPS += $(APPDIR)/frameworks/binder/examples/cpcfsq
+CONFIGURED_APPS += $(APPDIR)/frameworks/system/binder/examples/cpcfsq
 endif

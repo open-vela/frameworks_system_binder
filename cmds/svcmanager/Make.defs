@@ -15,5 +15,5 @@
 #
 
 ifeq ($(CONFIG_BINDER_CMD_SVCMANAGER), y)
-CONFIGURED_APPS += $(APPDIR)/frameworks/binder/cmds/svcmanager
+CONFIGURED_APPS += $(APPDIR)/frameworks/system/binder/cmds/svcmanager
 endif

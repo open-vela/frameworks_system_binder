@@ -14,4 +14,4 @@
 # limitations under the License.
 #
 
-include $(wildcard $(APPDIR)/frameworks/binder/cmds/*/Make.defs)
+include $(wildcard $(APPDIR)/frameworks/system/binder/cmds/*/Make.defs)

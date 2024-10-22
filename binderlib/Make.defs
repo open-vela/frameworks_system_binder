@@ -15,5 +15,5 @@
 #
 
 ifneq ($(CONFIG_BINDER_LIB),)
-CONFIGURED_APPS += $(APPDIR)/frameworks/binder/binderlib
+CONFIGURED_APPS += $(APPDIR)/frameworks/system/binder/binderlib
 endif

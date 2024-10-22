@@ -21,7 +21,7 @@ include $(APPDIR)/Make.defs
 ############################################################################
 
 CFLAGS   += -Werror
-CFLAGS   += ${INCDIR_PREFIX}$(APPDIR)/frameworks/binder/binderlib
+CFLAGS   += ${INCDIR_PREFIX}$(APPDIR)/frameworks/system/binder/binderlib
 CFLAGS   += ${INCDIR_PREFIX}$(APPDIR)/external/android/frameworks/native/libs/binder/ndk/include_ndk
 
 CSRCS += base/BBinder.c
