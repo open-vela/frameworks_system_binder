@@ -21,7 +21,7 @@ STACKSIZE = $(CONFIG_DEFAULT_TASK_STACKSIZE)
 MODULE    = $(CONFIG_BINDER_CMD_SVCMANAGER)
 
 CFLAGS += -Werror
-CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/frameworks/binder/binderlib
+CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/frameworks/system/binder/binderlib
 CFLAGS += ${INCDIR_PREFIX}$(APPDIR)/external/android/frameworks/native/libs/binder/ndk/include_ndk
 
 CSRCS    += ServiceManager.c
