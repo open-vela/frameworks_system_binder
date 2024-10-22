@@ -15,5 +15,5 @@
 #
 
 ifneq ($(CONFIG_BINDER_PERFORMANCE_LATENCY),)
-CONFIGURED_APPS += $(APPDIR)/frameworks/binder/performance/latency
+CONFIGURED_APPS += $(APPDIR)/frameworks/system/binder/performance/latency
 endif

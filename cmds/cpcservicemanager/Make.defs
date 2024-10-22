@@ -15,5 +15,5 @@
 #
 
 ifneq ($(CONFIG_CPC_SERVICEMANAGER),)
-CONFIGURED_APPS += $(APPDIR)/frameworks/binder/cmds/cpcservicemanager
+CONFIGURED_APPS += $(APPDIR)/frameworks/system/binder/cmds/cpcservicemanager
 endif

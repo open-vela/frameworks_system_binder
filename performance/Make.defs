@@ -14,4 +14,4 @@
 # limitations under the License.
 #
 
-include $(wildcard $(APPDIR)/frameworks/binder/performance/*/Make.defs)
+include $(wildcard $(APPDIR)/frameworks/system/binder/performance/*/Make.defs)

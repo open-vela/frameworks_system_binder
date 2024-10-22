@@ -15,5 +15,5 @@
 #
 
 ifneq ($(CONFIG_BINDER_EXAMPLES),)
-CONFIGURED_APPS += $(APPDIR)/frameworks/binder/examples/aidl_demo
+CONFIGURED_APPS += $(APPDIR)/frameworks/system/binder/examples/aidl_demo
 endif

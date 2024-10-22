@@ -15,5 +15,5 @@
 #
 
 ifneq ($(CONFIG_JAVA_CPCFSQ_EXAMPLES),)
-CONFIGURED_APPS += $(APPDIR)/frameworks/binder/examples/java_cpcfsq
+CONFIGURED_APPS += $(APPDIR)/frameworks/system/binder/examples/java_cpcfsq
 endif

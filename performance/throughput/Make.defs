@@ -15,5 +15,5 @@
 #
 
 ifneq ($(CONFIG_BINDER_PERFORMANCE_THROUGHPUT),)
-CONFIGURED_APPS += $(APPDIR)/frameworks/binder/performance/throughput
+CONFIGURED_APPS += $(APPDIR)/frameworks/system/binder/performance/throughput
 endif
