@@ -402,9 +402,11 @@ bool testSTLArrayUsage(std::shared_ptr<aidl::INdkTestArray> proxy)
     }
 
     // Test STL string array usage
-    std::array<std::string, 3> sin_1 = { "abc", "def", "ghi" };
+    std::array<std::string, 3> sin_1;
     std::array<std::string, 3> sout_1;
     std::array<std::string, 3> sret_1;
+    sin_1 = { "abc", "def", "ghi" };
+
     status = proxy->RepeatStringArray(sin_1, &sout_1, &sret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
         printf("STL RepeatStringArray error\n");
@@ -583,9 +585,13 @@ bool testInOutArrayUsage(std::shared_ptr<aidl::INdkTestArray> proxy)
     }
 
     // Test STL inout string array usage
-    std::array<std::string, 3> inout_sin_1 = { "abc", "def", "ghi" };
-    std::array<std::string, 3> inout_sout_1 = { "ABC", "DEF", "GHI" };
+    std::array<std::string, 3> inout_sin_1;
+    std::array<std::string, 3> inout_sout_1;
     std::array<std::string, 3> inout_sret_1;
+
+    inout_sin_1 = { "abc", "def", "ghi" };
+    inout_sout_1 = { "ABC", "DEF", "GHI" };
+
     status = proxy->RepeatInOutStringArray(inout_sin_1, &inout_sout_1, &inout_sret_1);
     if (AStatus_getStatus(status.get()) != STATUS_OK) {
         printf("STL inout RepeatInOutStringArray error\n");
