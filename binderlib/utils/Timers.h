@@ -21,43 +21,40 @@
 #ifndef __BINDER_INCLUDE_UTILS_TIMERS_H__
 #define __BINDER_INCLUDE_UTILS_TIMERS_H__
 
-// ------------------------------------------------------------------
-// C API
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef int64_t nsecs_t; // nano-seconds
+typedef int64_t nsecs_t;
 
-static inline nsecs_t seconds_to_nanoseconds(nsecs_t secs)
+static inline nsecs_t seconds_to_nanoseconds(nsecs_t sec)
 {
-    return secs * 1000000000;
+    return sec * 1000000000;
 }
 
-static inline nsecs_t milliseconds_to_nanoseconds(nsecs_t secs)
+static inline nsecs_t milliseconds_to_nanoseconds(nsecs_t sec)
 {
-    return secs * 1000000;
+    return sec * 1000000;
 }
 
-static inline nsecs_t microseconds_to_nanoseconds(nsecs_t secs)
+static inline nsecs_t microseconds_to_nanoseconds(nsecs_t sec)
 {
-    return secs * 1000;
+    return sec * 1000;
 }
 
-static inline nsecs_t nanoseconds_to_seconds(nsecs_t secs)
+static inline nsecs_t nanoseconds_to_seconds(nsecs_t sec)
 {
-    return secs / 1000000000;
+    return sec / 1000000000;
 }
 
-static inline nsecs_t nanoseconds_to_milliseconds(nsecs_t secs)
+static inline nsecs_t nanoseconds_to_milliseconds(nsecs_t sec)
 {
-    return secs / 1000000;
+    return sec / 1000000;
 }
 
-static inline nsecs_t nanoseconds_to_microseconds(nsecs_t secs)
+static inline nsecs_t nanoseconds_to_microseconds(nsecs_t sec)
 {
-    return secs / 1000;
+    return sec / 1000;
 }
 
 /* return the system-time according to the specified clock
