@@ -138,6 +138,13 @@ public:
         if (mFd == nullptr) {
             return Status::fromExceptionCode(Status::EX_TRANSACTION_FAILED);
         }
+
+        if (count == 0) {
+            fclose(mFd);
+            mFd = nullptr;
+            return Status::ok();
+        }
+
         pthread_mutex_init(&mFileMutex, NULL);
         pthread_cond_init(&mFileCondition, NULL);
         mFileBusy = true;
