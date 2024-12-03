@@ -60,18 +60,45 @@ Status CpcServiceManager::checkService(const std::string& name, sp<IBinder>* out
 }
 #endif
 
+static bool isValidServiceName(const std::string& name)
+{
+    if (name.size() == 0)
+        return false;
+    if (name.size() > 127)
+        return false;
+
+    for (char c : name) {
+        if (c == '_' || c == '-' || c == '.' || c == '/')
+            continue;
+        if (c >= 'a' && c <= 'z')
+            continue;
+        if (c >= 'A' && c <= 'Z')
+            continue;
+        if (c >= '0' && c <= '9')
+            continue;
+        return false;
+    }
+
+    return true;
+}
+
 Status CpcServiceManager::addService(const std::string& name, const sp<IBinder>& binder,
     bool allowIsolated, int32_t dumpPriority)
 {
+    auto sep = name.find("/");
+    std::string cpuname = name.substr(0, sep);
+    std::string servname = name.substr(sep + 1);
+
+    if (!isValidServiceName(servname)) {
+        LOG(ERROR) << "Invalid service name: " << servname;
+        return Status::fromExceptionCode(Status::EX_ILLEGAL_ARGUMENT, "Invalid service name.");
+    }
+
     LOG(INFO) << "addService name: " << name;
 
     if (binder->linkToDeath(sp<CpcServiceManager>::fromExisting(this)) != OK) {
         LOG(ERROR) << "Could not linkToDeath when adding " << name;
     }
-
-    auto sep = name.find("/");
-    std::string cpuname = name.substr(0, sep);
-    std::string servname = name.substr(sep + 1);
 
     if (auto it = mNameToService.find(servname); it != mNameToService.end()) {
         it->second.binder->unlinkToDeath(sp<CpcServiceManager>::fromExisting(this));
@@ -104,6 +131,11 @@ Status CpcServiceManager::listServices(int32_t dumpPriority, std::vector<std::st
 Status CpcServiceManager::registerForNotifications(const std::string& name,
     const sp<IServiceCallback>& callback)
 {
+    if (!isValidServiceName(name)) {
+        LOG(ERROR) << "Invalid service name: " << name;
+        return Status::fromExceptionCode(Status::EX_ILLEGAL_ARGUMENT, "Invalid service name.");
+    }
+
     if (callback == nullptr) {
         return Status::fromExceptionCode(Status::EX_NULL_POINTER);
     }
