@@ -65,7 +65,8 @@ public:
         const sp<LocalRegistrationCallback>& cb) override;
     std::vector<IServiceManager::ServiceDebugInfo> getServiceDebugInfo() override;
 #if CONFIG_ANDROID_BINDER_VERSION == 15
-    void enableAddServiceCache(bool value) override {
+    void enableAddServiceCache(bool value) override
+    {
     }
 #endif
 
@@ -143,7 +144,7 @@ sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
     session->setMaxIncomingThreads(1);
 #ifdef AF_VSOCK
     unsigned int remote_cid = 0;
-    strncpy((char *)&remote_cid, cpuname.c_str(), std::min(sizeof(remote_cid), cpuname.length()));
+    strncpy((char*)&remote_cid, cpuname.c_str(), std::min(sizeof(remote_cid), cpuname.length()));
     if (status_t status = session->setupVsockClient(remote_cid, murmurhash(servname.c_str()));
         status == OK) {
         return session->getRootObject();
@@ -156,13 +157,40 @@ sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
     }
 #endif
     return nullptr;
+}
 
+static bool isValidServiceName(const std::string& name)
+{
+    if (name.size() == 0)
+        return false;
+    if (name.size() > 127)
+        return false;
+
+    for (char c : name) {
+        if (c == '_' || c == '-' || c == '.' || c == '/')
+            continue;
+        if (c >= 'a' && c <= 'z')
+            continue;
+        if (c >= 'A' && c <= 'Z')
+            continue;
+        if (c >= '0' && c <= '9')
+            continue;
+        return false;
+    }
+
+    return true;
 }
 
 status_t CpcServiceManagerShim::addService(const String16& name, const sp<IBinder>& binder,
     bool allowIsolated, int dumpsysPriority)
 {
     std::string servname = String8(name).c_str();
+
+    if (!isValidServiceName(servname)) {
+        ALOGE("addService: Invalid service name: %s", servname.c_str());
+        return BAD_VALUE;
+    }
+
 #ifdef AF_VSOCK
     if (status_t status = ProcessState::self()->registerRemoteService(murmurhash(servname.c_str()), binder);
         status != android::OK) {
@@ -274,6 +302,12 @@ status_t CpcServiceManagerShim::registerForNotifications(const String16& name,
     const sp<LocalRegistrationCallback>& cb)
 {
     std::string nameStr = String8(name).c_str();
+
+    if (!isValidServiceName(nameStr)) {
+        ALOGE("registerForNotifications: Invalid service name: %s", nameStr.c_str());
+        return BAD_VALUE;
+    }
+
     sp<RegistrationWaiter> registrationWaiter = sp<RegistrationWaiter>::make(cb);
 
     if (binder::Status status = mTheRealServiceManager->registerForNotifications(nameStr, registrationWaiter); !status.isOk()) {
@@ -336,7 +370,7 @@ sp<IServiceManager> defaultCpcServiceManager()
             .svm_cid = remote_cid
         };
 
-        struct sockaddr *sa = reinterpret_cast<struct sockaddr *>(&addr);
+        struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(&addr);
         socklen_t len = sizeof(addr);
         int fd = socket(AF_VSOCK, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
         connect(fd, sa, len);
@@ -356,7 +390,7 @@ sp<IServiceManager> defaultCpcServiceManager()
             .rp_name = "cpcmanger",
         };
 
-        struct sockaddr *sa = reinterpret_cast<struct sockaddr *>(&addr);
+        struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(&addr);
         socklen_t len = sizeof(addr);
         int fd = socket(AF_RPMSG, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
         connect(fd, sa, len);
