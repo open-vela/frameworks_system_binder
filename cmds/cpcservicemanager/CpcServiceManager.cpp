@@ -156,8 +156,11 @@ Status CpcServiceManager::unregisterForNotifications(const std::string& name,
         std::vector<sp<IServiceCallback>>& listeners = it->second;
 
         for (auto lit = listeners.begin(); lit != listeners.end();) {
-            if (*lit == callback) {
+            if (IInterface::asBinder(*lit) == IInterface::asBinder(callback)) {
                 lit = listeners.erase(lit);
+                if (listeners.empty()) {
+                    mNameToCallback.erase(it);
+                }
                 return Status::ok();
             } else {
                 lit++;
