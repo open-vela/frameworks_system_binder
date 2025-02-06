@@ -65,6 +65,11 @@ public:
             ALOGE("ICpcFsqJni: Failed to configure SocketQ!\n");
             return Status::fromExceptionCode(Status::EX_ILLEGAL_ARGUMENT);
         }
+
+        pthread_mutex_init(&mFileMutex, NULL);
+        pthread_cond_init(&mFileCondition, NULL);
+        mFileBusy = false;
+
         return Status::ok();
     }
 
@@ -145,8 +150,6 @@ public:
             return Status::ok();
         }
 
-        pthread_mutex_init(&mFileMutex, NULL);
-        pthread_cond_init(&mFileCondition, NULL);
         mFileBusy = true;
         return Status::ok();
     }
