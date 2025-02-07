@@ -92,10 +92,11 @@ struct SocketQueueBase {
      * @param sockaddr point to addr related structure.
      * @param socklen is the length of sockaddr.
      * @param isServer whether the socket is server or not.
+     * @param timeout connect timeout in ms.
      *
      */
     void setupSocket(struct sockaddr* sockaddr,
-        socklen_t socklen, bool isServer);
+        socklen_t socklen, bool isServer, uint32_t timeout);
 
     /**
      * Destroy FSQ
@@ -108,9 +109,10 @@ struct SocketQueueBase {
 private:
     SocketQueueBase(const SocketQueueBase& other) = delete;
     SocketQueueBase& operator=(const SocketQueueBase& other) = delete;
-    void createNetSocket(const char* addr, uint16_t port, bool isServer);
-    void createLocalSocket(const char* sun_path, bool isServer);
-    void createRpmsgSocket(const char* rp_cpu, const char* rp_name, bool isServer);
+    void setSocketTimeout(uint32_t timeout);
+    void createNetSocket(const char* addr, uint16_t port, bool isServer, int timeout);
+    void createLocalSocket(const char* sun_path, bool isServer, int timeout);
+    void createRpmsgSocket(const char* rp_cpu, const char* rp_name, bool isServer, int timeout);
 
     int mSock;
     pthread_mutex_t mMutex;
@@ -119,8 +121,18 @@ private:
 };
 
 template <typename T>
+void SocketQueueBase<T>::setSocketTimeout(uint32_t timeout)
+{
+    struct timeval tv;
+    tv.tv_sec = timeout / 1000;
+    tv.tv_usec = timeout % 1000 * 1000;
+    setsockopt(mSock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    setsockopt(mSock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+}
+
+template <typename T>
 void SocketQueueBase<T>::setupSocket(struct sockaddr* sockaddr,
-    socklen_t socklen, bool isServer)
+    socklen_t socklen, bool isServer, uint32_t timeout)
 {
     if (isServer) {
         int ret = bind(mSock, sockaddr, socklen);
@@ -147,16 +159,23 @@ void SocketQueueBase<T>::setupSocket(struct sockaddr* sockaddr,
             return;
         }
         mSock = sock;
+        setSocketTimeout(timeout);
     } else {
+        setSocketTimeout(timeout);
         int ret = connect(mSock, sockaddr, socklen);
-        while (ret < 0) {
+        while (ret < 0 && errno == ECONNREFUSED) {
             ret = connect(mSock, sockaddr, socklen);
+        }
+        if (ret != 0) {
+            close(mSock);
+            mSock = -1;
         }
     }
 }
 
 template <typename T>
-void SocketQueueBase<T>::createNetSocket(const char* addr, uint16_t port, bool isServer)
+void SocketQueueBase<T>::createNetSocket(const char* addr,
+    uint16_t port, bool isServer, int timeout)
 {
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
@@ -180,11 +199,12 @@ void SocketQueueBase<T>::createNetSocket(const char* addr, uint16_t port, bool i
     }
 
     setupSocket((struct sockaddr*)&sockaddr,
-        sizeof(struct sockaddr_in), isServer);
+        sizeof(struct sockaddr_in), isServer, timeout);
 }
 
 template <typename T>
-void SocketQueueBase<T>::createLocalSocket(const char* sun_path, bool isServer)
+void SocketQueueBase<T>::createLocalSocket(const char* sun_path,
+    bool isServer, int timeout)
 {
     int sock = socket(AF_UNIX, SOCK_STREAM, 0);
     if (sock == -1) {
@@ -205,12 +225,12 @@ void SocketQueueBase<T>::createLocalSocket(const char* sun_path, bool isServer)
         mSock = sock;
     }
     setupSocket((struct sockaddr*)&sockaddr,
-        sizeof(struct sockaddr_un), isServer);
+        sizeof(struct sockaddr_un), isServer, timeout);
 }
 
 template <typename T>
 void SocketQueueBase<T>::createRpmsgSocket(const char* rp_cpu,
-    const char* rp_name, bool isServer)
+    const char* rp_name, bool isServer, int timeout)
 {
     int sock = socket(PF_RPMSG, SOCK_STREAM, 0);
     if (sock == -1) {
@@ -231,7 +251,7 @@ void SocketQueueBase<T>::createRpmsgSocket(const char* rp_cpu,
     }
 
     setupSocket((struct sockaddr*)&sockaddr,
-        sizeof(struct sockaddr_rpmsg), isServer);
+        sizeof(struct sockaddr_rpmsg), isServer, timeout);
 }
 
 template <typename T>
@@ -242,33 +262,25 @@ SocketQueueBase<T>::SocketQueueBase(const ::binder::SocketDescriptor& desc,
     case ::binder::SocketDescriptor::SockAddr::Tag::local_sock_addr: {
         const ::binder::SocketDescriptor::LocalSockAddr& addr = desc.sock_addr.get<::binder::SocketDescriptor::SockAddr::Tag::local_sock_addr>();
         ALOGV("SocketQueueBase: Create local socket!\n");
-        createLocalSocket(String8(addr.sun_path).c_str(), isServer);
+        createLocalSocket(String8(addr.sun_path).c_str(), isServer, timeout);
         break;
     }
     case ::binder::SocketDescriptor::SockAddr::Tag::rpmsg_sock_addr: {
         const ::binder::SocketDescriptor::RpmsgSockAddr& addr = desc.sock_addr.get<::binder::SocketDescriptor::SockAddr::Tag::rpmsg_sock_addr>();
         ALOGV("SocketQueueBase: Create rpmsg socket!\n");
         createRpmsgSocket(String8(addr.rp_cpu).c_str(),
-            String8(addr.rp_name).c_str(), isServer);
+            String8(addr.rp_name).c_str(), isServer, timeout);
         break;
     }
     case ::binder::SocketDescriptor::SockAddr::Tag::net_sock_addr: {
         ALOGV("SocketQueueBase: Create net socket!\n");
         const ::binder::SocketDescriptor::NetSockAddr& addr = desc.sock_addr.get<::binder::SocketDescriptor::SockAddr::Tag::net_sock_addr>();
-        createNetSocket(String8(addr.net_addr).c_str(), addr.net_port, isServer);
+        createNetSocket(String8(addr.net_addr).c_str(), addr.net_port, isServer, timeout);
         break;
     }
     default:
         ALOGV("SocketQueueBase: Unknown socket type!\n");
         break;
-    }
-
-    if (mSock != -1 && timeout >= 0) {
-        struct timeval tv;
-        tv.tv_sec = timeout / 1000;
-        tv.tv_usec = timeout % 1000 * 1000;
-        setsockopt(mSock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
-        setsockopt(mSock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
     }
 
     pthread_mutex_init(&mMutex, NULL);
