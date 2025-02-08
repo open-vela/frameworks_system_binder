@@ -245,6 +245,16 @@ void SocketQueueBase<T>::createRpmsgSocket(const char* rp_cpu,
     strlcpy(sockaddr.rp_name, rp_name, RPMSG_SOCKET_NAME_SIZE);
     mSock = sock;
     if (isServer) {
+        sockaddr_rpmsg addr;
+        socklen_t addrLen = sizeof(addr);
+        getsockname(sock, reinterpret_cast<struct sockaddr*>(&addr), &addrLen);
+        if (strcmp(rp_cpu, addr.rp_cpu)) {
+            ALOGE("SocketQueueBase: cpuname not match request: %s target: %s!\n",
+                rp_cpu, addr.rp_cpu);
+            close(mSock);
+            mSock = -1;
+            return;
+        }
         strlcpy(sockaddr.rp_cpu, "", RPMSG_SOCKET_CPU_SIZE);
     } else {
         strlcpy(sockaddr.rp_cpu, rp_cpu, RPMSG_SOCKET_CPU_SIZE);
