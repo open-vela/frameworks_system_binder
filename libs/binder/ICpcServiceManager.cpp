@@ -370,7 +370,13 @@ sp<IServiceManager> defaultCpcServiceManager()
             .svm_cid = remote_cid
         };
 
-        struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(&addr);
+        binder = session->getRootObject();
+        if (binder == nullptr) {
+            ALOGE("Failed to getRootObject!\n");
+            return nullptr;
+        }
+
+        struct sockaddr *sa = reinterpret_cast<struct sockaddr *>(&addr);
         socklen_t len = sizeof(addr);
         int fd = socket(AF_VSOCK, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
         connect(fd, sa, len);
@@ -378,7 +384,7 @@ sp<IServiceManager> defaultCpcServiceManager()
         close(fd);
         char cpuname[16] = { 0 };
         memcpy(cpuname, &addr.svm_cid, sizeof(addr.svm_cid));
-        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(session->getRootObject()), cpuname);
+        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), cpuname);
     }
 #endif
 
@@ -390,13 +396,19 @@ sp<IServiceManager> defaultCpcServiceManager()
             .rp_name = "cpcmanger",
         };
 
-        struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(&addr);
+        binder = session->getRootObject();
+        if (binder == nullptr) {
+            ALOGE("Failed to getRootObject!\n");
+            return nullptr;
+        }
+
+        struct sockaddr *sa = reinterpret_cast<struct sockaddr *>(&addr);
         socklen_t len = sizeof(addr);
         int fd = socket(AF_RPMSG, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
         connect(fd, sa, len);
         getsockname(fd, sa, &len);
         close(fd);
-        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(session->getRootObject()), addr.rp_cpu);
+        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), addr.rp_cpu);
     }
 #endif
 
