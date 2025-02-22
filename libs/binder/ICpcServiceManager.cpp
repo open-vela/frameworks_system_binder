@@ -376,7 +376,7 @@ sp<IServiceManager> defaultCpcServiceManager()
             return nullptr;
         }
 
-        struct sockaddr *sa = reinterpret_cast<struct sockaddr *>(&addr);
+        struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(&addr);
         socklen_t len = sizeof(addr);
         int fd = socket(AF_VSOCK, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
         connect(fd, sa, len);
@@ -402,7 +402,7 @@ sp<IServiceManager> defaultCpcServiceManager()
             return nullptr;
         }
 
-        struct sockaddr *sa = reinterpret_cast<struct sockaddr *>(&addr);
+        struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(&addr);
         socklen_t len = sizeof(addr);
         int fd = socket(AF_RPMSG, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
         connect(fd, sa, len);

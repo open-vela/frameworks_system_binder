@@ -18,6 +18,11 @@ config CPC_SERVICEMANAGER
 	tristate "Cpc service manager"
 	depends on ANDROID_BINDER
 
+config CPC_SERVICEMANAGER_PRIORITY
+	int "Cpc service manager priority"
+	depends on CPC_SERVICEMANAGER
+	default 100
+
 config CPC_SERVICEMANAGER_STACKSIZE
 	int "Cpc service manager stack size"
 	depends on CPC_SERVICEMANAGER
