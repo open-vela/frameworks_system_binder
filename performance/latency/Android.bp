@@ -1,0 +1,68 @@
+// Copyright (C) 2025 Xiaomi Corporation
+
+cc_defaults {
+    name: "rpc_latency_defaults",
+    shared_libs: [
+        "libcutils",
+        "liblog",
+        "libutils",
+        "libbinder",
+    ],
+
+    static_libs: [
+        "libcpcbinder",
+    ],
+}
+
+filegroup {
+    name: "binder_latency_aidl",
+    srcs: [
+        "IBinderLatency.aidl",
+    ],
+}
+
+cc_binary {
+    name: "latency_sendvec_client",
+
+    aidl: {
+        include_dirs: [
+            "vendor/vela/frameworks/binder/performance",
+        ],
+    },
+
+    srcs: [
+        "latency_sendvec_client.cpp",
+        ":binder_latency_aidl",
+    ],
+
+    defaults: ["rpc_latency_defaults"],
+}
+
+cc_binary {
+    name: "latency_sendvec_server",
+
+    aidl: {
+        include_dirs: [
+            "vendor/vela/frameworks/binder/performance",
+        ],
+    },
+
+    srcs: [
+        "latency_sendvec_server.cpp",
+        ":binder_latency_aidl",
+    ],
+
+    defaults: ["rpc_latency_defaults"],
+}
+
+cc_binary {
+    name: "latency_rpmsg_socket",
+    srcs: ["latency_rpmsg_socket.cpp"],
+    defaults: ["rpc_latency_defaults"],
+}
+
+cc_binary {
+    name: "latency_rpmsg_server",
+    srcs: ["latency_rpmsg_server.cpp"],
+    defaults: ["rpc_latency_defaults"],
+}
