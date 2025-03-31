@@ -57,6 +57,13 @@ filegroup {
 }
 
 filegroup {
+    name: "ICpcServiceManagerAndroid14",
+    srcs: [
+        "android14/ICpcServiceManager.cpp",
+    ],
+}
+
+filegroup {
     name: "ICpcServiceManagerAndroid13",
     srcs: [
         "android13/ICpcServiceManager.cpp",
