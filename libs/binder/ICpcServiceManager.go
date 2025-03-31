@@ -23,16 +23,24 @@ func ICpcServiceManagerHook(ctx android.LoadHookContext) {
 
     type props struct {
         Srcs []string
+        Enabled *bool
     }
 
     p := &props{}
+    var enabled bool = true
 
-    if (strings.Compare(Version, "12") > 0) {
-        if (strings.Compare(Version, "14") < 0) {
-            p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid13")
-        } else {
-            p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid")
-        }
+    if (strings.Compare(Version, "15") == 0 || strings.Compare(Version, "Baklava") == 0) {
+        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid")
+    } else if (strings.Compare(Version, "14") == 0 || strings.Compare(Version, "UpsideDownCake") == 0) {
+        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid14")
+    } else if (strings.Compare(Version, "13") == 0 || strings.Compare(Version, "Tiramisu") == 0) {
+        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid13")
+    } else {
+        enabled = false
+        p.Enabled = &enabled
+    }
+
+    if enabled {
         p.Srcs = append(p.Srcs, ":SocketDescriptor")
     }
 

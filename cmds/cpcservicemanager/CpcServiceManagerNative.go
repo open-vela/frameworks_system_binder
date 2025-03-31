@@ -31,15 +31,15 @@ func CpcServiceManagerNativeHook(ctx android.LoadHookContext) {
 
     var enabled bool = true
 
-    if (strings.Compare(Version, "12") != 0) {
-        if (strings.Compare(Version, "14") < 0) {
-            p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid13")
-        } else {
-            p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid")
-        }
+    if (strings.Compare(Version, "15") == 0 || strings.Compare(Version, "Baklava") == 0) {
+        p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid")
+    } else if (strings.Compare(Version, "14") == 0 || strings.Compare(Version, "UpsideDownCake") == 0) {
+        p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid14")
+    } else if (strings.Compare(Version, "13") == 0 || strings.Compare(Version, "Tiramisu") == 0) {
+        p.Srcs = append(p.Srcs, ":CpcServiceManagerNativeAndroid13")
     } else {
-        enabled = false
-        p.Enabled = &enabled
+       enabled = false
+       p.Enabled = &enabled
     }
 
     ctx.AppendProperties(p)

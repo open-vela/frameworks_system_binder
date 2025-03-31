@@ -27,8 +27,8 @@ func ICpcServiceManagerHook(ctx android.LoadHookContext) {
 
     p := &props{}
 
-    if (strings.Compare(Version, "13") == 0 || strings.Compare(Version, "Tiramisu") == 0) {
-        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid13")
+    if (strings.Compare(Version, "14") == 0 || strings.Compare(Version, "UpsideDownCake") == 0) {
+        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid14")
     } else {
         p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid")
     }

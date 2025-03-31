@@ -26,9 +26,17 @@ filegroup {
 }
 
 filegroup {
+    name: "CpcServiceManagerNativeAndroid14",
+    srcs: [
+        "android14/main.cpp",
+        "android14/CpcServiceManager.cpp",
+    ],
+}
+
+filegroup {
     name: "CpcServiceManagerNativeAndroid13",
     srcs: [
-        "main.cpp",
+        "android13/main.cpp",
         "android13/CpcServiceManager.cpp",
     ],
 }

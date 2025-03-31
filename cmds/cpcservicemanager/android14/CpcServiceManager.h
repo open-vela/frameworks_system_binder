@@ -32,8 +32,7 @@ using os::ServiceDebugInfo;
 class CpcServiceManager : public os::BnServiceManager, public IBinder::DeathRecipient {
 public:
     binder::Status getService(const std::string& name, sp<IBinder>* outBinder) override;
-    binder::Status getService2(const std::string& name, os::Service* out) override;
-    binder::Status checkService(const std::string& name, os::Service* out) override;
+    binder::Status checkService(const std::string& name, sp<IBinder>* outBinder) override;
     binder::Status addService(const std::string& name, const sp<IBinder>& binder,
         bool allowIsolated, int32_t dumpPriority) override;
     binder::Status listServices(int32_t dumpPriority, std::vector<std::string>* outList) override;

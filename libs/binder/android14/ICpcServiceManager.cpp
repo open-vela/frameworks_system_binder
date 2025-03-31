@@ -54,8 +54,6 @@ public:
     status_t unregisterForNotifications(const String16& service,
         const sp<LocalRegistrationCallback>& cb) override;
     std::vector<IServiceManager::ServiceDebugInfo> getServiceDebugInfo() override;
-    void enableAddServiceCache(bool value) override {
-    }
 
     IBinder* onAsBinder() override
     {

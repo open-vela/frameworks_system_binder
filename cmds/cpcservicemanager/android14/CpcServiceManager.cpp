@@ -34,21 +34,9 @@ Status CpcServiceManager::getService(const std::string& name, sp<IBinder>* outBi
     return Status::ok();
 }
 
-Status CpcServiceManager::getService2(const std::string& name, os::Service* out)
+Status CpcServiceManager::checkService(const std::string& name, sp<IBinder>* outBinder)
 {
-    sp<IBinder> outBinder;
-
-    getService(name, &outBinder);
-    os::ServiceWithMetadata serviceWithMetadata = os::ServiceWithMetadata();
-    serviceWithMetadata.service = outBinder;
-    *out = os::Service::make<os::Service::Tag::serviceWithMetadata>(serviceWithMetadata);
-
-    return Status::ok();
-}
-
-Status CpcServiceManager::checkService(const std::string& name, os::Service* out)
-{
-    return getService2(name, out);
+    return getService(name, outBinder);
 }
 
 Status CpcServiceManager::addService(const std::string& name, const sp<IBinder>& binder,
