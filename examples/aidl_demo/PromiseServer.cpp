@@ -25,7 +25,7 @@
 
 using namespace android;
 
-class MyTestServer : public BnTestPromise {
+class IPromiseServer : public BnTestPromise {
 public:
     binder::Status add(int32_t a, int32_t b, const sp<ITestPromiseCallback>& callback)
     {
@@ -46,7 +46,7 @@ extern "C" int main(int argc, char** argv)
 {
     ALOGD("promise service start argc: %d, argv[0]: %s", argc, argv[0]);
 
-    sp<MyTestServer> server = sp<MyTestServer>::make();
+    sp<IPromiseServer> server = sp<IPromiseServer>::make();
     defaultServiceManager()->addService(String16("testpromise.service"), server);
 
     ProcessState::self()->startThreadPool();
