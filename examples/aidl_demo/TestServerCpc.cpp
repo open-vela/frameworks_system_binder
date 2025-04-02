@@ -28,7 +28,7 @@ using namespace android;
 using android::binder::Status;
 
 namespace android {
-class ITestServer : public BnTestStuff {
+class ICpcServer : public BnTestStuff {
 public:
     Status read(int32_t sample)
     {
@@ -46,7 +46,7 @@ public:
 extern "C" int main(int argc, char** argv)
 {
     ALOGI("sample service start count: %d, argv[0]: %s", argc, argv[0]);
-    sp<ITestServer> testServer = new ITestServer;
+    sp<ICpcServer> testServer = new ICpcServer;
 
     sp<IServiceManager> sm(defaultCpcServiceManager());
 

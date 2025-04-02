@@ -21,5 +21,5 @@ config JAVA_CPCFSQ_EXAMPLES
 config JAVA_CPCFSQ_EXAMPLES_STACKSIZE
         int "java_cpcfsq examples stack size"
         depends on JAVA_CPCFSQ_EXAMPLES
-        default DEFAULT_TASK_STACKSIZE
+        default 4096
 

@@ -26,7 +26,7 @@
 
 using namespace android;
 
-class TestServer : public BnTestPromise {
+class IPromiseCpcServer : public BnTestPromise {
 public:
     binder::Status add(int32_t a, int32_t b, const sp<ITestPromiseCallback>& callback)
     {
@@ -50,7 +50,7 @@ extern "C" int main(int argc, char** argv)
 {
     ALOGD("promise service start argc: %d, argv[0]: %s", argc, argv[0]);
 
-    sp<TestServer> testserver = sp<TestServer>::make();
+    sp<IPromiseCpcServer> testserver = sp<IPromiseCpcServer>::make();
 
     sp<IServiceManager> sm(defaultCpcServiceManager());
 

@@ -30,7 +30,7 @@ using android::NO_ERROR;
 using android::binder::Status;
 
 namespace android {
-class ITestDumpsysServer : public BnTestStuff {
+class IDumpsysServer : public BnTestStuff {
 public:
     virtual status_t dump(int fd, const Vector<String16>& args) override
     {
@@ -56,7 +56,7 @@ extern "C" int main(int argc, char** argv)
     // obtain service manager
     sp<IServiceManager> sm(defaultServiceManager());
     ALOGI("defaultServiceManager(): %p", sm.get());
-    sp<ITestDumpsysServer> testServer = new ITestDumpsysServer;
+    sp<IDumpsysServer> testServer = new IDumpsysServer;
 
     // add service
     sm->addService(String16("aidldemo.dumpservice"), testServer);
