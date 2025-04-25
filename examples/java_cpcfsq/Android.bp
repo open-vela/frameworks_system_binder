@@ -39,7 +39,7 @@ cc_binary {
 
     aidl: {
         include_dirs: [
-            "vendor/vela/frameworks/binder/libs/binder/include",
+            "vendor/vela/frameworks/system/binder/libs/binder/include",
         ],
     },
 
