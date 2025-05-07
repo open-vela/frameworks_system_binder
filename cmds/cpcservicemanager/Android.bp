@@ -38,4 +38,8 @@ cc_binary {
     static_libs: [
         "libcpcbinder",
     ],
+
+    header_libs: [
+        "libframework_utils_headers",
+    ],
 }

@@ -19,6 +19,7 @@
 #include <binder/IServiceManager.h>
 #include <binder/ProcessState.h>
 #include <binder/RpcServer.h>
+#include <murmurhash.h>
 
 #include "CpcServiceManager.h"
 
@@ -45,10 +46,20 @@ extern "C" int main(int argc, char** argv)
         LOG(INFO) << "add cpcservicemanager to servicemanager, ret: " << ret;
     }
 
+#ifdef AF_VSOCK
+    {
+        uint32_t port = murmurhash("cpcmanager");
+        ret = ProcessState::self()->registerRemoteService(port, manager);
+        LOG(INFO) << "add cpcservicemanager to vsocket, ret: " << ret;
+    }
+#endif
+
+#ifdef AF_RPMSG
     {
         ret = ProcessState::self()->registerRemoteService("cpcmanager", manager);
         LOG(INFO) << "add cpcservicemanager to rpmsg socket, ret: " << ret;
     }
+#endif
 
     IPCThreadState::self()->joinThreadPool();
 

@@ -79,6 +79,7 @@ cc_library_static {
     header_libs: [
         "libcpcbinder_headers",
         "libfsq_headers",
+        "libframework_utils_headers",
     ],
 
     export_header_lib_headers: [
