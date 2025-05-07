@@ -26,9 +26,17 @@
 #include <utils/Log.h>
 
 #include <inttypes.h>
+#include <murmurhash.h>
 #include <sys/socket.h>
 #ifdef AF_RPMSG
 #include <netpacket/rpmsg.h>
+#endif
+#ifdef AF_VSOCK
+#ifdef __linux__
+#include <linux/vm_sockets.h>
+#else
+#include <netpacket/vm_sockets.h>
+#endif
 #endif
 
 namespace android {
@@ -133,21 +141,40 @@ sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
 
     auto session = RpcSession::make();
     session->setMaxIncomingThreads(1);
-    auto status = session->setupRpmsgSockClient(cpuname.c_str(), servname.c_str());
-    if (status != OK)
-        return nullptr;
+#ifdef AF_VSOCK
+    unsigned int remote_cid = 0;
+    strncpy((char *)&remote_cid, cpuname.c_str(), std::min(sizeof(remote_cid), cpuname.length()));
+    if (status_t status = session->setupVsockClient(remote_cid, murmurhash(servname.c_str()));
+        status == OK) {
+        return session->getRootObject();
+    }
+#endif
+#ifdef AF_RPMSG
+    if (status_t status = session->setupRpmsgSockClient(cpuname.c_str(), servname.c_str());
+        status == OK) {
+        return session->getRootObject();
+    }
+#endif
+    return nullptr;
 
-    return session->getRootObject();
 }
 
 status_t CpcServiceManagerShim::addService(const String16& name, const sp<IBinder>& binder,
     bool allowIsolated, int dumpsysPriority)
 {
     std::string servname = String8(name).c_str();
-    if (status_t ret = ProcessState::self()->registerRemoteService(servname.c_str(), binder);
-        ret != android::OK) {
-        return ret;
+#ifdef AF_VSOCK
+    if (status_t status = ProcessState::self()->registerRemoteService(murmurhash(servname.c_str()), binder);
+        status != android::OK) {
+        ALOGI("failed to reigister %s for vsock status=%" PRId32, servname.c_str(), status);
     }
+#endif
+#ifdef AF_RPMSG
+    if (status_t status = ProcessState::self()->registerRemoteService(servname.c_str(), binder);
+        status != android::OK) {
+        ALOGI("failed to register %s for rpmsg status=%" PRId32, servname.c_str(), status);
+    }
+#endif
 
     defaultServiceManager()->addService(name, binder);
 
@@ -291,31 +318,55 @@ std::vector<IServiceManager::ServiceDebugInfo> CpcServiceManagerShim::getService
 
 sp<IServiceManager> defaultCpcServiceManager()
 {
-#ifdef AF_RPMSG
     sp<IServiceManager> sm(defaultServiceManager());
     sp<IBinder> binder = sm->checkService(String16("cpcmanager"));
 
-    if (binder == nullptr) {
-        auto session = RpcSession::make();
-        session->setMaxIncomingThreads(1);
-        auto status = session->setupRpmsgSockClient(CONFIG_CPC_SERVICEMANAGER_CPUNAME, "cpcmanager");
-        if (status != OK)
-            return nullptr;
-        binder = session->getRootObject();
+    if (binder != nullptr)
+        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), CONFIG_CPC_SERVICEMANAGER_CPUNAME);
+
+    auto session = RpcSession::make();
+    session->setMaxIncomingThreads(1);
+#ifdef AF_VSOCK
+    unsigned int remote_cid = 0;
+    memcpy(&remote_cid, CONFIG_CPC_SERVICEMANAGER_CPUNAME, std::min(strlen(CONFIG_CPC_SERVICEMANAGER_CPUNAME), sizeof(remote_cid)));
+    if (session->setupVsockClient(remote_cid, murmurhash("cpcmanager")) == OK) {
+        struct sockaddr_vm addr = {
+            .svm_family = AF_VSOCK,
+            .svm_port = murmurhash("cpcmanager"),
+            .svm_cid = remote_cid
+        };
+
+        struct sockaddr *sa = reinterpret_cast<struct sockaddr *>(&addr);
+        socklen_t len = sizeof(addr);
+        int fd = socket(AF_VSOCK, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
+        connect(fd, sa, len);
+        getsockname(fd, sa, &len);
+        close(fd);
+        char cpuname[16] = { 0 };
+        memcpy(cpuname, &addr.svm_cid, sizeof(addr.svm_cid));
+        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(session->getRootObject()), cpuname);
     }
-
-    // read cpuname from kernel
-    int fd = socket(AF_RPMSG, SOCK_STREAM | SOCK_CLOEXEC, 0);
-    sockaddr_storage addr;
-    socklen_t addrLen = sizeof(addr);
-    getsockname(fd, reinterpret_cast<sockaddr*>(&addr), &addrLen);
-    const char* cpuname = ((sockaddr_rpmsg*)(&addr))->rp_cpu;
-    close(fd);
-
-    return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(binder), cpuname);
-#else
-    return nullptr;
 #endif
+
+#ifdef AF_RPMSG
+    if (session->setupRpmsgSockClient(CONFIG_CPC_SERVICEMANAGER_CPUNAME, "cpcmanager") == OK) {
+        struct sockaddr_rpmsg addr = {
+            .rp_family = AF_RPMSG,
+            .rp_cpu = CONFIG_CPC_SERVICEMANAGER_CPUNAME,
+            .rp_name = "cpcmanger",
+        };
+
+        struct sockaddr *sa = reinterpret_cast<struct sockaddr *>(&addr);
+        socklen_t len = sizeof(addr);
+        int fd = socket(AF_RPMSG, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
+        connect(fd, sa, len);
+        getsockname(fd, sa, &len);
+        close(fd);
+        return sp<CpcServiceManagerShim>::make(interface_cast<os::IServiceManager>(session->getRootObject()), addr.rp_cpu);
+    }
+#endif
+
+    return nullptr;
 }
 
 } // namespace android
