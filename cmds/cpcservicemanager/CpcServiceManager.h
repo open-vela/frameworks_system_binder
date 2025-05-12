@@ -32,8 +32,13 @@ using os::ServiceDebugInfo;
 class CpcServiceManager : public os::BnServiceManager, public IBinder::DeathRecipient {
 public:
     binder::Status getService(const std::string& name, sp<IBinder>* outBinder) override;
+#if CONFIG_ANDROID_BINDER_VERSION == 15
     binder::Status getService2(const std::string& name, os::Service* out) override;
     binder::Status checkService(const std::string& name, os::Service* out) override;
+#endif
+#if CONFIG_ANDROID_BINDER_VERSION == 13 || CONFIG_ANDROID_BINDER_VERSION == 14
+    binder::Status checkService(const std::string& name, sp<IBinder>* outBinder) override;
+#endif
     binder::Status addService(const std::string& name, const sp<IBinder>& binder,
         bool allowIsolated, int32_t dumpPriority) override;
     binder::Status listServices(int32_t dumpPriority, std::vector<std::string>* outList) override;
@@ -46,8 +51,10 @@ public:
     binder::Status getDeclaredInstances(const std::string& interface, std::vector<std::string>* outReturn) override;
     binder::Status updatableViaApex(const std::string& name,
         std::optional<std::string>* outReturn) override;
+#if CONFIG_ANDROID_BINDER_VERSION == 14 || CONFIG_ANDROID_BINDER_VERSION == 15
     binder::Status getUpdatableNames(const std::string& apexName,
         std::vector<std::string>* outReturn) override;
+#endif
     binder::Status getConnectionInfo(const std::string& name,
         std::optional<ConnectionInfo>* outReturn) override;
     binder::Status registerClientCallback(const std::string& name, const sp<IBinder>& service,

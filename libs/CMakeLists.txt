@@ -15,12 +15,11 @@
 #
 
 if(CONFIG_ANDROID_BINDER)
-
   set_property(
     TARGET nuttx
     APPEND
     PROPERTY NUTTX_CXX_INCLUDE_DIRECTORIES
              ${CMAKE_CURRENT_LIST_DIR}/binder/include)
 
-  target_sources(android PRIVATE binder/android13/ICpcServiceManager.cpp)
+  target_sources(android PRIVATE binder/ICpcServiceManager.cpp)
 endif()

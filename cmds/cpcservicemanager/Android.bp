@@ -17,34 +17,15 @@ CpcServiceManagerNative_defaults {
     name: "CpcServiceManagerNative_defaults",
 }
 
-filegroup {
-    name: "CpcServiceManagerNativeAndroid",
-    srcs: [
-        "main.cpp",
-        "CpcServiceManager.cpp",
-    ],
-}
-
-filegroup {
-    name: "CpcServiceManagerNativeAndroid14",
-    srcs: [
-        "android14/main.cpp",
-        "android14/CpcServiceManager.cpp",
-    ],
-}
-
-filegroup {
-    name: "CpcServiceManagerNativeAndroid13",
-    srcs: [
-        "android13/main.cpp",
-        "android13/CpcServiceManager.cpp",
-    ],
-}
-
 cc_binary {
     name: "cpcservicemanager",
 
     defaults: ["CpcServiceManagerNative_defaults"],
+
+    srcs: [
+        "main.cpp",
+        "CpcServiceManager.cpp",
+    ],
 
     shared_libs: [
         "libbase",

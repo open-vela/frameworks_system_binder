@@ -47,15 +47,19 @@ public:
     bool isDeclared(const String16& name) override;
     Vector<String16> getDeclaredInstances(const String16& interface) override;
     std::optional<String16> updatableViaApex(const String16& name) override;
+#if CONFIG_ANDROID_BINDER_VERSION == 14 || CONFIG_ANDROID_BINDER_VERSION == 15
     Vector<String16> getUpdatableNames(const String16& apexName) override;
+#endif
     std::optional<IServiceManager::ConnectionInfo> getConnectionInfo(const String16& name) override;
     status_t registerForNotifications(const String16& service,
         const sp<LocalRegistrationCallback>& cb) override;
     status_t unregisterForNotifications(const String16& service,
         const sp<LocalRegistrationCallback>& cb) override;
     std::vector<IServiceManager::ServiceDebugInfo> getServiceDebugInfo() override;
+#if CONFIG_ANDROID_BINDER_VERSION == 15
     void enableAddServiceCache(bool value) override {
     }
+#endif
 
     IBinder* onAsBinder() override
     {
@@ -224,11 +228,13 @@ std::optional<String16> CpcServiceManagerShim::updatableViaApex(const String16& 
     return std::nullopt;
 }
 
+#if CONFIG_ANDROID_BINDER_VERSION == 14 || CONFIG_ANDROID_BINDER_VERSION == 15
 Vector<String16> CpcServiceManagerShim::getUpdatableNames(const String16& apexName)
 {
     (void)apexName;
     return {};
 }
+#endif
 
 std::optional<IServiceManager::ConnectionInfo> CpcServiceManagerShim::getConnectionInfo(
     const String16& name)
