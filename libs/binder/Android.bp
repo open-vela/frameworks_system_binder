@@ -49,33 +49,16 @@ ICpcServiceManager_defaults {
     name: "ICpcServiceManager_defaults",
 }
 
-filegroup {
-    name: "ICpcServiceManagerAndroid",
-    srcs: [
-        "ICpcServiceManager.cpp",
-    ],
-}
-
-filegroup {
-    name: "ICpcServiceManagerAndroid14",
-    srcs: [
-        "android14/ICpcServiceManager.cpp",
-    ],
-}
-
-filegroup {
-    name: "ICpcServiceManagerAndroid13",
-    srcs: [
-        "android13/ICpcServiceManager.cpp",
-    ],
-}
-
 cc_library_static {
     name: "libcpcbinder",
 
     vendor_available: true,
 
     defaults: ["ICpcServiceManager_defaults"],
+
+    srcs: [
+        "ICpcServiceManager.cpp",
+    ],
 
     cflags: [
         "-DCONFIG_CPC_SERVICEMANAGER_CPUNAME=\"ap\"",

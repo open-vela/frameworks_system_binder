@@ -23,6 +23,7 @@ func ICpcServiceManagerHook(ctx android.LoadHookContext) {
 
     type props struct {
         Srcs []string
+        Cppflags []string
         Enabled *bool
     }
 
@@ -30,11 +31,11 @@ func ICpcServiceManagerHook(ctx android.LoadHookContext) {
     var enabled bool = true
 
     if (strings.Compare(Version, "15") == 0 || strings.Compare(Version, "Baklava") == 0) {
-        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid")
+        p.Cppflags = append(p.Cppflags, "-DCONFIG_ANDROID_BINDER_VERSION=15")
     } else if (strings.Compare(Version, "14") == 0 || strings.Compare(Version, "UpsideDownCake") == 0) {
-        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid14")
+        p.Cppflags = append(p.Cppflags, "-DCONFIG_ANDROID_BINDER_VERSION=14")
     } else if (strings.Compare(Version, "13") == 0 || strings.Compare(Version, "Tiramisu") == 0) {
-        p.Srcs = append(p.Srcs, ":ICpcServiceManagerAndroid13")
+        p.Cppflags = append(p.Cppflags, "-DCONFIG_ANDROID_BINDER_VERSION=13")
     } else {
         enabled = false
         p.Enabled = &enabled

@@ -18,7 +18,7 @@ include $(APPDIR)/Make.defs
 
 CXXEXT = .cpp
 
-CXXSRCS += binder/android13/ICpcServiceManager.cpp
+CXXSRCS += binder/ICpcServiceManager.cpp
 
 AIDLFLAGS += --lang=cpp -h binder/include -o binder/include
 AIDLSRCS += binder/include/binder/SocketDescriptor.aidl

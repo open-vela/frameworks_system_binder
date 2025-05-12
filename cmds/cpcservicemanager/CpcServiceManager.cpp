@@ -34,6 +34,7 @@ Status CpcServiceManager::getService(const std::string& name, sp<IBinder>* outBi
     return Status::ok();
 }
 
+#if CONFIG_ANDROID_BINDER_VERSION == 15
 Status CpcServiceManager::getService2(const std::string& name, os::Service* out)
 {
     sp<IBinder> outBinder;
@@ -50,6 +51,14 @@ Status CpcServiceManager::checkService(const std::string& name, os::Service* out
 {
     return getService2(name, out);
 }
+#endif
+
+#if CONFIG_ANDROID_BINDER_VERSION == 13 || CONFIG_ANDROID_BINDER_VERSION == 14
+Status CpcServiceManager::checkService(const std::string& name, sp<IBinder>* outBinder)
+{
+    return getService(name, outBinder);
+}
+#endif
 
 Status CpcServiceManager::addService(const std::string& name, const sp<IBinder>& binder,
     bool allowIsolated, int32_t dumpPriority)
@@ -155,11 +164,13 @@ Status CpcServiceManager::updatableViaApex(const std::string& name,
     return Status::fromExceptionCode(Status::EX_UNSUPPORTED_OPERATION);
 }
 
+#if CONFIG_ANDROID_BINDER_VERSION == 14 || CONFIG_ANDROID_BINDER_VERSION == 15
 Status CpcServiceManager::getUpdatableNames([[maybe_unused]] const std::string& apexName,
     std::vector<std::string>* outReturn)
 {
     return Status::fromExceptionCode(Status::EX_UNSUPPORTED_OPERATION);
 }
+#endif
 
 Status CpcServiceManager::getConnectionInfo(const std::string& name,
     std::optional<ConnectionInfo>* outReturn)

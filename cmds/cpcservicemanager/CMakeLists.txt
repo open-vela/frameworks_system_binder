@@ -14,7 +14,6 @@
 # the License.
 #
 if(CONFIG_CPC_SERVICEMANAGER)
-
   nuttx_add_application(
     MODULE
     ${CONFIG_CPC_SERVICEMANAGER}
@@ -23,9 +22,9 @@ if(CONFIG_CPC_SERVICEMANAGER)
     STACKSIZE
     ${CONFIG_CPC_SERVICEMANAGER_STACKSIZE}
     INCLUDE_DIRECTORIES
-    ${CMAKE_CURRENT_SOURCE_DIR}/android13
+    ${CMAKE_CURRENT_SOURCE_DIR}/
     SRCS
     main.cpp
-    android13/CpcServiceManager.cpp)
+    CpcServiceManager.cpp)
 
 endif()
