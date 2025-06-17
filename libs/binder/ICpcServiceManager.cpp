@@ -35,7 +35,7 @@
 #ifdef __linux__
 #include <linux/vm_sockets.h>
 #else
-#include <netpacket/vm_sockets.h>
+#include <sys/vm_sockets.h>
 #endif
 #endif
 
