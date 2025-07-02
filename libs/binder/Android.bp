@@ -62,6 +62,7 @@ cc_library_static {
 
     cflags: [
         "-DCONFIG_CPC_SERVICEMANAGER_CPUNAME=\"ap\"",
+        "-DCONFIG_CPC_MAX_INCOMING_THREADS=4",
     ],
 
     aidl: {
