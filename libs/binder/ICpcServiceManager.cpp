@@ -141,7 +141,13 @@ sp<IBinder> CpcServiceManagerShim::getService(const String16& name) const
     }
 
     auto session = RpcSession::make();
+
+#ifdef CONFIG_CPC_MAX_INCOMING_THREADS
+    session->setMaxIncomingThreads(CONFIG_CPC_MAX_INCOMING_THREADS);
+#else
     session->setMaxIncomingThreads(1);
+#endif
+
 #ifdef AF_VSOCK
     unsigned int remote_cid = 0;
     strncpy((char*)&remote_cid, cpuname.c_str(), std::min(sizeof(remote_cid), cpuname.length()));
