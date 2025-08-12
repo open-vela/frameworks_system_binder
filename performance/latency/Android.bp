@@ -26,7 +26,7 @@ cc_binary {
 
     aidl: {
         include_dirs: [
-            "vendor/vela/frameworks/binder/performance",
+            "vendor/vela/frameworks/system/binder/performance",
         ],
     },
 
@@ -43,7 +43,7 @@ cc_binary {
 
     aidl: {
         include_dirs: [
-            "vendor/vela/frameworks/binder/performance",
+            "vendor/vela/frameworks/system/binder/performance",
         ],
     },
 
