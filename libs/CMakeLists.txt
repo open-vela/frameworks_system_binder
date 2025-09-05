@@ -14,7 +14,7 @@
 # the License.
 #
 
-if(CONFIG_ANDROID_BINDER)
+if(CONFIG_ANDROID_BINDER_RPC)
   set_property(
     TARGET nuttx
     APPEND

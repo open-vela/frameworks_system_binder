@@ -16,6 +16,7 @@
 
 include $(APPDIR)/Make.defs
 
+ifdef CONFIG_ANDROID_BINDER_RPC
 CXXEXT = .cpp
 
 CXXSRCS += binder/ICpcServiceManager.cpp
@@ -25,5 +26,6 @@ AIDLSRCS += binder/include/binder/SocketDescriptor.aidl
 
 CXXSRCS += binder/include/binder/SocketDescriptor.cpp
 CXXFLAGS += -Wno-return-type
+endif
 
 include $(APPDIR)/Application.mk

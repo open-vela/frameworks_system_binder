@@ -16,7 +16,7 @@
 
 config CPC_SERVICEMANAGER
 	tristate "Cpc service manager"
-	depends on ANDROID_BINDER
+	depends on ANDROID_BINDER_RPC
 
 config CPC_SERVICEMANAGER_PRIORITY
 	int "Cpc service manager priority"

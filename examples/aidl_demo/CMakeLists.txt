@@ -36,24 +36,26 @@ if(CONFIG_BINDER_EXAMPLES)
     ITestStuff.aidl
     ITestPromise.aidl
     ITestPromiseCallback.aidl)
-  nuttx_add_aidl(
-    TARGET
-    binder_examples
-    AIDL_BASE_DIR
-    ${CMAKE_CURRENT_LIST_DIR}
-    AIDL_INCLUDE_DIR
-    ${CMAKE_CURRENT_LIST_DIR}
-    AIDL_HEADER_DIR
-    ${CMAKE_CURRENT_BINARY_DIR}
-    AIDL_OUT_DIR
-    ${CMAKE_CURRENT_BINARY_DIR}
-    AIDL_FLAGS
-    --lang=ndk
-    --ndk=ctype
-    AIDLS
-    INdkTestString.aidl
-    INdkTestVector.aidl
-    INdkTestArray.aidl)
+  if(CONFIG_ANDROID_BINDER_NDK)
+    nuttx_add_aidl(
+      TARGET
+      binder_examples
+      AIDL_BASE_DIR
+      ${CMAKE_CURRENT_LIST_DIR}
+      AIDL_INCLUDE_DIR
+      ${CMAKE_CURRENT_LIST_DIR}
+      AIDL_HEADER_DIR
+      ${CMAKE_CURRENT_BINARY_DIR}
+      AIDL_OUT_DIR
+      ${CMAKE_CURRENT_BINARY_DIR}
+      AIDL_FLAGS
+      --lang=ndk
+      --ndk=ctype
+      AIDLS
+      INdkTestString.aidl
+      INdkTestVector.aidl
+      INdkTestArray.aidl)
+  endif()
 
   nuttx_include_directories(${INCDIR})
 
@@ -75,31 +77,34 @@ if(CONFIG_BINDER_EXAMPLES)
       binder_examples)
   endmacro()
 
-  add_binder_example_app(NdkTestStringSrv NdkTestStringSrv.cpp)
-  add_binder_example_app(NdkTestStringCli NdkTestStringCli.cpp)
   add_binder_example_app(TestClient TestClient.cpp)
   add_binder_example_app(TestServer TestServer.cpp)
   add_binder_example_app(TestServerEpoll TestServerEpoll.cpp)
-  if(CONFIG_LIBUV)
-    add_binder_example_app(TestServerLibuv TestServerLibuv.cpp)
-    add_binder_example_app(TestServerCpcLibuv TestServerCpcLibuv.cpp)
-  endif()
-
-  add_binder_example_app(NdkTestVectorSrv NdkTestVectorSrv.cpp)
-  add_binder_example_app(NdkTestVectorCli NdkTestVectorCli.cpp)
-
-  add_binder_example_app(NdkTestArraySrv NdkTestArraySrv.cpp)
-  add_binder_example_app(NdkTestArrayCli NdkTestArrayCli.cpp)
-
   add_binder_example_app(PromiseClient PromiseClient.cpp)
   add_binder_example_app(PromiseServer PromiseServer.cpp)
-
-  add_binder_example_app(PromiseClientCpc PromiseClientCpc.cpp)
-  add_binder_example_app(PromiseServerCpc PromiseServerCpc.cpp)
-
-  add_binder_example_app(TestClientCpc TestClientCpc.cpp)
-  add_binder_example_app(TestServerCpc TestServerCpc.cpp)
-
   add_binder_example_app(TestServerDumpsys TestServerDumpsys.cpp)
+
+  if(CONFIG_ANDROID_BINDER_NDK)
+    add_binder_example_app(NdkTestStringSrv NdkTestStringSrv.cpp)
+    add_binder_example_app(NdkTestStringCli NdkTestStringCli.cpp)
+    add_binder_example_app(NdkTestVectorSrv NdkTestVectorSrv.cpp)
+    add_binder_example_app(NdkTestVectorCli NdkTestVectorCli.cpp)
+    add_binder_example_app(NdkTestArraySrv NdkTestArraySrv.cpp)
+    add_binder_example_app(NdkTestArrayCli NdkTestArrayCli.cpp)
+  endif()
+
+  if(CONFIG_ANDROID_BINDER_RPC)
+    add_binder_example_app(PromiseClientCpc PromiseClientCpc.cpp)
+    add_binder_example_app(PromiseServerCpc PromiseServerCpc.cpp)
+    add_binder_example_app(TestClientCpc TestClientCpc.cpp)
+    add_binder_example_app(TestServerCpc TestServerCpc.cpp)
+    if(CONFIG_LIBUV)
+      add_binder_example_app(TestServerCpcLibuv TestServerCpcLibuv.cpp)
+    endif()
+  endif()
+
+  if(CONFIG_LIBUV)
+    add_binder_example_app(TestServerLibuv TestServerLibuv.cpp)
+  endif()
 
 endif()

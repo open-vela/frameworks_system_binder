@@ -16,7 +16,7 @@
 
 config JAVA_CPCFSQ_EXAMPLES
         tristate "For java_cpcfsq examples"
-        depends on ANDROID_BINDER
+        depends on ANDROID_BINDER_RPC
 
 config JAVA_CPCFSQ_EXAMPLES_STACKSIZE
         int "java_cpcfsq examples stack size"

@@ -16,7 +16,7 @@
 
 config JAVA_BINDER_EXAMPLES
 	tristate "For java binder examples"
-	depends on ANDROID_BINDER
+	depends on ANDROID_BINDER_RPC
 
 config JAVA_BINDER_EXAMPLES_STACKSIZE
 	int "Java binder examples stack size"

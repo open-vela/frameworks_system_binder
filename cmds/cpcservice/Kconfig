@@ -16,7 +16,7 @@
 
 config CPC_SERVICE
 	tristate "Cpc service command"
-	depends on ANDROID_BINDER
+	depends on ANDROID_BINDER_RPC
 
 config CPC_SERVICE_STACKSIZE
 	int "Cpc service command stack size"
