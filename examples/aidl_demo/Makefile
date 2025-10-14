@@ -25,27 +25,11 @@ STACKSIZE = $(CONFIG_BINDER_EXAMPLES_STACKSIZE)
 AIDLFLAGS = --lang=cpp -h. -o.
 AIDLFLAGS += -I.
 AIDLSRCS += ITestStuff.aidl
-AIDLSRCS += INdkTestString.aidl
-INdkTestString.aidl_AIDLFLAGS = --lang=ndk --ndk=ctype
 AIDLSRCS += ITestPromise.aidl ITestPromiseCallback.aidl
-INdkTestVector.aidl_AIDLFLAGS = --lang=ndk --ndk=ctype
-AIDLSRCS += INdkTestVector.aidl
-INdkTestArray.aidl_AIDLFLAGS = --lang=ndk --ndk=ctype
-AIDLSRCS += INdkTestArray.aidl
-
 CXXFLAGS += -I.
 
 CXXSRCS  += ITestStuff.cpp
-CXXSRCS  += INdkTestString.cpp
-
-MAINSRC  += NdkTestStringSrv.cpp
-PROGNAME += NdkTestStringSrv
-MAINSRC  += NdkTestStringCli.cpp
-PROGNAME += NdkTestStringCli
-
 CXXSRCS  += ITestPromise.cpp ITestPromiseCallback.cpp
-CXXSRCS  += INdkTestVector.cpp
-CXXSRCS  += INdkTestArray.cpp
 
 MAINSRC  += TestClient.cpp
 PROGNAME += TestClient
@@ -59,21 +43,15 @@ MAINSRC  += TestServerLibuv.cpp
 PROGNAME += TestServerLibuv
 endif
 
-MAINSRC  += NdkTestVectorSrv.cpp
-PROGNAME += NdkTestVectorSrv
-MAINSRC  += NdkTestVectorCli.cpp
-PROGNAME += NdkTestVectorCli
-
-MAINSRC  += NdkTestArraySrv.cpp
-PROGNAME += NdkTestArraySrv
-MAINSRC  += NdkTestArrayCli.cpp
-PROGNAME += NdkTestArrayCli
-
 MAINSRC  += PromiseClient.cpp
 PROGNAME += PromiseClient
 MAINSRC  += PromiseServer.cpp
 PROGNAME += PromiseServer
 
+MAINSRC  += TestServerDumpsys.cpp
+PROGNAME += TestServerDumpsys
+
+ifdef CONFIG_ANDROID_BINDER_RPC
 MAINSRC  += PromiseClientCpc.cpp
 PROGNAME += PromiseClientCpc
 MAINSRC  += PromiseServerCpc.cpp
@@ -83,13 +61,10 @@ MAINSRC  += TestClientCpc.cpp
 PROGNAME += TestClientCpc
 MAINSRC  += TestServerCpc.cpp
 PROGNAME += TestServerCpc
-
-MAINSRC  += TestServerDumpsys.cpp
-PROGNAME += TestServerDumpsys
-
 ifdef CONFIG_LIBUV
 MAINSRC  += TestServerCpcLibuv.cpp
 PROGNAME += TestServerCpcLibuv
+endif
 endif
 
 include $(APPDIR)/Application.mk
