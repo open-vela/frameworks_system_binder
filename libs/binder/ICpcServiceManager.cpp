@@ -27,10 +27,8 @@
 
 #include <inttypes.h>
 #include <murmurhash.h>
-#include <sys/socket.h>
-#ifdef AF_RPMSG
 #include <netpacket/rpmsg.h>
-#endif
+#include <sys/socket.h>
 #ifdef AF_VSOCK
 #ifdef __linux__
 #include <linux/vm_sockets.h>
