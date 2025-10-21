@@ -19,17 +19,15 @@
 #include <arpa/inet.h>
 #include <binder/SocketDescriptor.h>
 #include <fcntl.h>
+#include <netpacket/rpmsg.h>
 #include <new>
+#include <pthread.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/un.h>
 #include <unistd.h>
 #include <utils/Log.h>
 #include <utils/SystemClock.h>
-#ifdef AF_RPMSG
-#include <netpacket/rpmsg.h>
-#endif
-#include <pthread.h>
 
 namespace android {
 
