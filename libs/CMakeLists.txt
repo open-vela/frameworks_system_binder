@@ -19,7 +19,29 @@ if(CONFIG_ANDROID_BINDER)
     TARGET nuttx
     APPEND
     PROPERTY NUTTX_CXX_INCLUDE_DIRECTORIES
-             ${CMAKE_CURRENT_LIST_DIR}/binder/include)
+             ${CMAKE_CURRENT_LIST_DIR}/binder/include
+             ${CMAKE_CURRENT_BINARY_DIR}/binder/include)
+
+  nuttx_add_library(SocketDescriptor STATIC)
+  target_compile_options(SocketDescriptor PRIVATE -Wno-return-type)
+  nuttx_add_aidl(
+    TARGET
+    SocketDescriptor
+    AIDL_BASE_DIR
+    ${CMAKE_CURRENT_LIST_DIR}/binder/include
+    AIDL_INCLUDE_DIR
+    ${CMAKE_CURRENT_LIST_DIR}/binder/include
+    AIDL_HEADER_DIR
+    ${CMAKE_CURRENT_BINARY_DIR}/binder/include
+    AIDL_OUT_DIR
+    ${CMAKE_CURRENT_BINARY_DIR}/binder/include/
+    AIDL_FLAGS
+    --lang=cpp
+    AIDLS
+    binder/include/binder/SocketDescriptor.aidl)
+
+  include_directories_for_all_aidl(${CMAKE_CURRENT_LIST_DIR}/binder/include
+                                   ${CMAKE_CURRENT_BINARY_DIR}/binder/include)
 
   target_sources(android PRIVATE binder/ICpcServiceManager.cpp)
 endif()
