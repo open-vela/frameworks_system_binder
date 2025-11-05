@@ -47,15 +47,15 @@ public:
     sp<IBinder> getService(const String16& name) const override;
     status_t addService(const String16& name, const sp<IBinder>& service,
         bool allowIsolated, int dumpsysPriority) override;
-    Vector<String16> listServices(int dumpsysPriority) override;
+    std::vector<String16> listServices(int dumpsysPriority) override;
 
     sp<IBinder> checkService(const String16& name) const override;
     sp<IBinder> waitForService(const String16& name) override;
     bool isDeclared(const String16& name) override;
-    Vector<String16> getDeclaredInstances(const String16& interface) override;
+    std::vector<String16> getDeclaredInstances(const String16& interface) override;
     std::optional<String16> updatableViaApex(const String16& name) override;
 #if CONFIG_ANDROID_BINDER_VERSION == 14 || CONFIG_ANDROID_BINDER_VERSION == 15
-    Vector<String16> getUpdatableNames(const String16& apexName) override;
+    std::vector<String16> getUpdatableNames(const String16& apexName) override;
 #endif
     std::optional<IServiceManager::ConnectionInfo> getConnectionInfo(const String16& name) override;
     status_t registerForNotifications(const String16& service,
@@ -228,17 +228,17 @@ status_t CpcServiceManagerShim::addService(const String16& name, const sp<IBinde
     return status.exceptionCode();
 }
 
-Vector<String16> CpcServiceManagerShim::listServices(int dumpsysPriority)
+std::vector<String16> CpcServiceManagerShim::listServices(int dumpsysPriority)
 {
     std::vector<std::string> ret;
     if (!mTheRealServiceManager->listServices(dumpsysPriority, &ret).isOk()) {
         return {};
     }
 
-    Vector<String16> res;
-    res.setCapacity(ret.size());
+    std::vector<String16> res;
+    res.resize(ret.size());
     for (const std::string& name : ret)
-        res.push(String16(name.c_str()));
+        res.push_back(String16(name.c_str()));
     return res;
 }
 
@@ -287,7 +287,7 @@ bool CpcServiceManagerShim::isDeclared(const String16& name)
     return false;
 }
 
-Vector<String16> CpcServiceManagerShim::getDeclaredInstances(const String16& interface)
+std::vector<String16> CpcServiceManagerShim::getDeclaredInstances(const String16& interface)
 {
     (void)interface;
     return {};
@@ -300,7 +300,7 @@ std::optional<String16> CpcServiceManagerShim::updatableViaApex(const String16& 
 }
 
 #if CONFIG_ANDROID_BINDER_VERSION == 14 || CONFIG_ANDROID_BINDER_VERSION == 15
-Vector<String16> CpcServiceManagerShim::getUpdatableNames(const String16& apexName)
+std::vector<String16> CpcServiceManagerShim::getUpdatableNames(const String16& apexName)
 {
     (void)apexName;
     return {};

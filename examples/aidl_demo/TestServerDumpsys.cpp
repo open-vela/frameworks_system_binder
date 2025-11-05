@@ -32,7 +32,7 @@ using android::binder::Status;
 namespace android {
 class IDumpsysServer : public BnTestStuff {
 public:
-    virtual status_t dump(int fd, const Vector<String16>& args) override
+    virtual status_t dump(int fd, const std::vector<String16>& args) override
     {
         dprintf(fd, "hello dumpsys!\n");
         return NO_ERROR;
