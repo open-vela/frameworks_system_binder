@@ -20,6 +20,7 @@ func ICpcServiceManagerHook(ctx android.LoadHookContext) {
     //AConfig() function is at build/soong/android/config.go
 
     Version := ctx.AConfig().PlatformVersionName()
+    CpcVal := ctx.Config().VendorConfig("vela").String("servicemanager")
 
     type props struct {
         Srcs []string
@@ -29,6 +30,12 @@ func ICpcServiceManagerHook(ctx android.LoadHookContext) {
 
     p := &props{}
     var enabled bool = true
+
+    if (CpcVal == "") {
+        CpcVal = "ap"
+    }
+
+    p.Cppflags = append(p.Cppflags, "-DCONFIG_CPC_SERVICEMANAGER_CPUNAME=\"" + CpcVal + "\"")
 
     if (strings.Compare(Version, "15") == 0 || strings.Compare(Version, "Baklava") == 0) {
         p.Cppflags = append(p.Cppflags, "-DCONFIG_ANDROID_BINDER_VERSION=15")
