@@ -47,15 +47,27 @@ public:
     sp<IBinder> getService(const String16& name) const override;
     status_t addService(const String16& name, const sp<IBinder>& service,
         bool allowIsolated, int dumpsysPriority) override;
+#ifdef __ANDROID__
+    Vector<String16> listServices(int dumpsysPriority) override;
+#else
     std::vector<String16> listServices(int dumpsysPriority) override;
+#endif
 
     sp<IBinder> checkService(const String16& name) const override;
     sp<IBinder> waitForService(const String16& name) override;
     bool isDeclared(const String16& name) override;
+#ifdef __ANDROID__
+    Vector<String16> getDeclaredInstances(const String16& interface) override;
+#else
     std::vector<String16> getDeclaredInstances(const String16& interface) override;
+#endif
     std::optional<String16> updatableViaApex(const String16& name) override;
 #if CONFIG_ANDROID_BINDER_VERSION == 14 || CONFIG_ANDROID_BINDER_VERSION == 15
+#ifdef __ANDROID__
+    Vector<String16> getUpdatableNames(const String16& apexName) override;
+#else
     std::vector<String16> getUpdatableNames(const String16& apexName) override;
+#endif
 #endif
     std::optional<IServiceManager::ConnectionInfo> getConnectionInfo(const String16& name) override;
     status_t registerForNotifications(const String16& service,
@@ -228,17 +240,29 @@ status_t CpcServiceManagerShim::addService(const String16& name, const sp<IBinde
     return status.exceptionCode();
 }
 
+#ifdef __ANDROID__
+Vector<String16> CpcServiceManagerShim::listServices(int dumpsysPriority)
+#else
 std::vector<String16> CpcServiceManagerShim::listServices(int dumpsysPriority)
+#endif
 {
     std::vector<std::string> ret;
     if (!mTheRealServiceManager->listServices(dumpsysPriority, &ret).isOk()) {
         return {};
     }
 
-    std::vector<String16> res;
+#ifdef __ANDROID__
+    Vector<String16> res;
+    res.setCapacity(ret.size());
     res.resize(ret.size());
     for (const std::string& name : ret)
+        res.push(String16(name.c_str()));
+#else
+    std::vector<String16> res;
+    res.reserve(ret.size());
+    for (const std::string& name : ret)
         res.push_back(String16(name.c_str()));
+#endif
     return res;
 }
 
@@ -287,7 +311,11 @@ bool CpcServiceManagerShim::isDeclared(const String16& name)
     return false;
 }
 
+#ifdef __ANDROID__
+Vector<String16> CpcServiceManagerShim::getDeclaredInstances(const String16& interface)
+#else
 std::vector<String16> CpcServiceManagerShim::getDeclaredInstances(const String16& interface)
+#endif
 {
     (void)interface;
     return {};
@@ -300,7 +328,11 @@ std::optional<String16> CpcServiceManagerShim::updatableViaApex(const String16& 
 }
 
 #if CONFIG_ANDROID_BINDER_VERSION == 14 || CONFIG_ANDROID_BINDER_VERSION == 15
+#ifdef __ANDROID__
+Vector<String16> CpcServiceManagerShim::getUpdatableNames(const String16& apexName)
+#else
 std::vector<String16> CpcServiceManagerShim::getUpdatableNames(const String16& apexName)
+#endif
 {
     (void)apexName;
     return {};
