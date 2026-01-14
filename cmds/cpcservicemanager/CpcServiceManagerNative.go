@@ -21,6 +21,7 @@ func CpcServiceManagerNativeHook(ctx android.LoadHookContext) {
     //AConfig() function is at build/soong/android/config.go
 
     Version := ctx.AConfig().PlatformVersionName()
+    ForceVer := ctx.Config().VendorConfig("vela").String("forcever")
 
     type props struct {
         Srcs []string
@@ -31,7 +32,10 @@ func CpcServiceManagerNativeHook(ctx android.LoadHookContext) {
     p := &props{}
 
     var enabled bool = true
-    if (strings.Compare(Version, "15") == 0 || strings.Compare(Version, "Baklava") == 0) {
+
+    if (ForceVer != "") {
+        p.Cppflags = append(p.Cppflags, "-DCONFIG_ANDROID_BINDER_VERSION=" + ForceVer)
+    } else if (strings.Compare(Version, "15") == 0 || strings.Compare(Version, "Baklava") == 0) {
         p.Cppflags = append(p.Cppflags, "-DCONFIG_ANDROID_BINDER_VERSION=15")
     } else if (strings.Compare(Version, "14") == 0 || strings.Compare(Version, "UpsideDownCake") == 0) {
         p.Cppflags = append(p.Cppflags, "-DCONFIG_ANDROID_BINDER_VERSION=14")
