@@ -254,7 +254,6 @@ std::vector<String16> CpcServiceManagerShim::listServices(int dumpsysPriority)
 #ifdef __ANDROID__
     Vector<String16> res;
     res.setCapacity(ret.size());
-    res.resize(ret.size());
     for (const std::string& name : ret)
         res.push(String16(name.c_str()));
 #else
